@@ -1,0 +1,6 @@
+reload-success: "&aReload éffectué avec succès ! (%reload-time% ms)"
+reload-failed: "&cUne erreur est survenue lors du chargement des données veuillez regarder les logs !"
+no-key: "&cVous n'avez pas la clé pour ouvrir cette caisse !"
+successfully-give: "&aClé donnée avec succès"
+error-arg-give-command: "&4Commande incorrecte veuillez utiliser /cr "
+no-missed-reward: "&cVous n'avez aucune récompense à récupérer"

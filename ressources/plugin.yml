@@ -1,0 +1,11 @@
+name: Crates
+version: 1.0
+author: FlushFR
+main: fr.flushfr.crates.Main
+commands:
+  crates:
+    aliases:
+      - cr
+      - caisses
+      - caisse
+      - crate

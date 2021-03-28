@@ -1,0 +1,13 @@
+package fr.flushfr.crates.utils;
+
+public enum ErrorType {
+    UNDEFINED,
+    INCORRECT_STRING,
+    INCORRECT_BOOLEAN,
+    INCORRECT_STRINGLIST,
+    INCORRECT_INTEGER,
+    INCORRECT_MATERIAL_ID,
+    INCORRECT_SOUND,
+    INCORRECT_PARTICLE,
+
+}

@@ -1,5 +1,7 @@
 package fr.flushfr.crates.animations;
 
+import fr.flushfr.crates.managers.AnimationManager;
+import fr.flushfr.crates.managers.HologramManager;
 import fr.flushfr.crates.objects.Crates;
 import fr.flushfr.crates.objects.animation.data.EpicSwordData;
 import fr.flushfr.crates.objects.animation.data.FireworkData;
@@ -19,14 +21,25 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 
-import static fr.flushfr.crates.Main.*;
+import static fr.flushfr.crates.Main.getMainInstance;
 
 public class Animations {
 
+    private static Animations instance;
+
+    public Animations () {
+        instance = this;
+    }
+
+    public static Animations getInstance() {
+        return instance;
+    }
+
+
     public void startEpicSwordAnimation(Crates c, EpicSwordData epicSwordData, AnimationStatus animationStatus) {
         EpicSwordAnimation AO=new EpicSwordAnimation(c.getCrateLocation());
-        getAnimationManager().animationStarted.add(AO);
-        getHologramManager().addHologramToRemove(AO.getArmorstand());
+        AnimationManager.getInstance().animationStarted.add(AO);
+        HologramManager.getInstance().addHologramToRemove(AO.getArmorstand());
         AO.getArmorstand().setGravity(false);
         AO.getArmorstand().setCanPickupItems(false);
         AO.getArmorstand().setVisible(false);
@@ -84,10 +97,10 @@ public class Animations {
         itemHologramLocation.setX(itemHologramLocation.getX()+0.5);
         itemHologramLocation.setZ(itemHologramLocation.getZ()+0.5);
         itemHologramLocation.setY(itemHologramLocation.getY()+0.35);
-        ArmorStand itemHologram = getHologramManager().spawnItemHologram(itemHologramLocation, c.getRewards().get(0).getItemPresentation().build(), "toRemove");
+        ArmorStand itemHologram = HologramManager.getInstance().spawnItemHologram(itemHologramLocation, c.getRewards().get(0).getItemPresentation().build(), "toRemove");
         Location nameHologramLocation = itemHologramLocation.clone();
         nameHologramLocation.setY(nameHologramLocation.getY()+0.35);
-        ArmorStand nameHologram = getHologramManager().spawnHologram(nameHologramLocation,c.getRewards().get(0).getItemPresentation().build().getItemMeta().getDisplayName(), "toRemove");
+        ArmorStand nameHologram = HologramManager.getInstance().spawnHologram(nameHologramLocation,c.getRewards().get(0).getItemPresentation().build().getItemMeta().getDisplayName(), "toRemove");
         nameHologram.setCustomNameVisible(true);
         itemHologram.setCanPickupItems(false);
         RollAnimation rollAnimation= new RollAnimation(c.getRewards(), rollData.getHologramOnRolling());
@@ -101,11 +114,11 @@ public class Animations {
                 if (i<70 && i%5 == 0) {
                     Bukkit.getWorld(c.getCrateLocation().getWorld().getName()).playSound(itemHologramLocation, rollAnimation.isSoundChange() ? rollData.getSound1().getSound() : rollData.getSound2().getSound(), rollData.getSound2().getVolume(), rollData.getSound2().getPitch());
                     rollAnimation.setSoundChange(!rollAnimation.isSoundChange());
-                    getHologramManager().updateRollArmorstand(rollAnimation, itemHologram, nameHologram);
+                    HologramManager.getInstance().updateRollArmorstand(rollAnimation, itemHologram, nameHologram);
                 } else if (i<131 && i%20 == 0) {
                     Bukkit.getWorld(c.getCrateLocation().getWorld().getName()).playSound(itemHologramLocation, rollAnimation.isSoundChange() ? rollData.getSound1().getSound() : rollData.getSound2().getSound(), rollData.getSound2().getVolume(), rollData.getSound2().getPitch());
                     rollAnimation.setSoundChange(!rollAnimation.isSoundChange());
-                    getHologramManager().updateRollArmorstand(rollAnimation, itemHologram, nameHologram);
+                    HologramManager.getInstance().updateRollArmorstand(rollAnimation, itemHologram, nameHologram);
                 } else if (i==190) {
                     itemHologram.getPassenger().remove();
                     itemHologram.remove();

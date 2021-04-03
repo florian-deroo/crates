@@ -21,6 +21,14 @@ import static fr.flushfr.crates.Main.*;
 
 public class HologramManager {
 
+    private static HologramManager instance;
+    public HologramManager () {
+        instance = this;
+    }
+    public static HologramManager getInstance() {
+        return instance;
+    }
+
     public HashMap<String, List<ArmorStand>> crateHologram = new HashMap<>();
 
     public List<Item> itemToRemove = new ArrayList<>();
@@ -30,20 +38,20 @@ public class HologramManager {
     int i = 0;
 
     public void removeAllHologram () {
-        for (EpicSwordAnimation ao : getAnimationManager().animationStarted) {ao.getArmorstand().remove();}
+        for (EpicSwordAnimation ao : AnimationManager.getInstance().animationStarted) {ao.getArmorstand().remove();}
         for (String s: crateHologram.keySet()) {for (ArmorStand h : crateHologram.get(s)) {h.remove();}}
         for (ArmorStand s: hologramColored.keySet()) {s.remove();}
-        for (Item s: getHologramManager().itemToRemove) {s.remove();}
+        for (Item s: HologramManager.getInstance().itemToRemove) {s.remove();}
     }
 
     public void addHologramToRemove (ArmorStand o) {
-        List<ArmorStand> l = getHologramManager().crateHologram.containsKey("toRemove") ? getHologramManager().crateHologram.get("toRemove") : new ArrayList<>();
+        List<ArmorStand> l = HologramManager.getInstance().crateHologram.containsKey("toRemove") ? HologramManager.getInstance().crateHologram.get("toRemove") : new ArrayList<>();
         l.add(o);
-        getHologramManager().crateHologram.put("toRemove", l);
+        HologramManager.getInstance().crateHologram.put("toRemove", l);
     }
 
     public void displayAllHologram () {
-        for (Crates o : getCratesManager().crates) {
+        for (Crates o : CratesManager.getInstance().crates) {
             displayHologram(o.getHologramLocation(),o.getHologramAmbient(), o.getCrateName());
         }
     }
@@ -66,9 +74,9 @@ public class HologramManager {
         as.setGravity(false);
         as.setVisible(false);
         itemToRemove.add(i);
-        List<ArmorStand> li = getHologramManager().crateHologram.containsKey(crateName) ? getHologramManager().crateHologram.get(crateName) : new ArrayList<>();
+        List<ArmorStand> li = HologramManager.getInstance().crateHologram.containsKey(crateName) ? HologramManager.getInstance().crateHologram.get(crateName) : new ArrayList<>();
         li.add(as);
-        getHologramManager().crateHologram.put(crateName, li);
+        HologramManager.getInstance().crateHologram.put(crateName, li);
         return as;
     }
 
@@ -117,9 +125,9 @@ public class HologramManager {
             as.setCustomNameVisible(false);
         }
         as.setVisible(false);
-        List<ArmorStand> li = getHologramManager().crateHologram.containsKey(crateName) ? getHologramManager().crateHologram.get(crateName) : new ArrayList<>();
+        List<ArmorStand> li = HologramManager.getInstance().crateHologram.containsKey(crateName) ? HologramManager.getInstance().crateHologram.get(crateName) : new ArrayList<>();
         li.add(as);
-        getHologramManager().crateHologram.put(crateName, li);
+        HologramManager.getInstance().crateHologram.put(crateName, li);
         return as;
     }
 

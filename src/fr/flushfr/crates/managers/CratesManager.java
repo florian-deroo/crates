@@ -1,5 +1,6 @@
 package fr.flushfr.crates.managers;
 
+import fr.flushfr.crates.animations.Animations;
 import fr.flushfr.crates.objects.Crates;
 import fr.flushfr.crates.objects.animation.data.*;
 import fr.flushfr.crates.objects.animation.process.AnimationStatus;
@@ -18,30 +19,23 @@ import static fr.flushfr.crates.Main.*;
 
 public class CratesManager {
 
+    private static CratesManager instance;
+    public CratesManager () {
+        instance = this;
+    }
+    public static CratesManager getInstance() {
+        return instance;
+    }
+
     public List<Crates> crates = new ArrayList<>();
     public List<String> cratesName = new ArrayList<>();
     public HashMap<Location, String> protectedLocation = new HashMap<>();
-
-    public void setCratePosition (String crateName, Location loc) {
-        getCratesLocationFile().getCratesLocationFile().set("location."+crateName+".world", loc.getWorld().getName());
-        getCratesLocationFile().getCratesLocationFile().set("location."+crateName+".x",loc.getX());
-        getCratesLocationFile().getCratesLocationFile().set("location."+crateName+".y",loc.getY());
-        getCratesLocationFile().getCratesLocationFile().set("location."+crateName+".z",loc.getZ());
-        getCratesLocationFile().saveCratesLocationFile();
-        getCratesLocationFile().reloadCratesLocationFile();
-        for (Crates c : crates) {
-            if (crateName.equals(c.getCrateName())) {
-                c.setCrateLocation(loc);
-            }
-        }
-        getMainInstance().reload();
-    }
 
     public void startAnimationList (Crates c, Player p) {
         List<AnimationStatus> animationStatus= new ArrayList<>();
         List<Object> animationList = new ArrayList<>(c.getAnimationList());
         for (Object ignored : animationList) {animationStatus.add(new AnimationStatus(false , false));}
-        getHologramManager().hideOrRevealHologram(getHologramManager().crateHologram.get(c.getCrateName()), false);
+        HologramManager.getInstance().hideOrRevealHologram(HologramManager.getInstance().crateHologram.get(c.getCrateName()), false);
 
         new BukkitRunnable() {
             @Override
@@ -51,11 +45,11 @@ public class CratesManager {
                     currentAnimationStatus.setStarted(true);
                     Object animation = animationList.get(0);
                     if (animation instanceof EpicSwordData) {
-                        getAnimations().startEpicSwordAnimation(c, (EpicSwordData) animation, currentAnimationStatus);
+                        Animations.getInstance().startEpicSwordAnimation(c, (EpicSwordData) animation, currentAnimationStatus);
                     } else if (animation instanceof RollData) {
-                        getAnimations().startRollAnimation(c,(RollData) animation, currentAnimationStatus);
+                        Animations.getInstance().startRollAnimation(c,(RollData) animation, currentAnimationStatus);
                     } else if (animation instanceof FireworkData) {
-                        getAnimations().launchFirework(c.getCrateLocation(), (FireworkData) animation);
+                        Animations.getInstance().launchFirework(c.getCrateLocation(), (FireworkData) animation);
                         currentAnimationStatus.setEnded(true);
                     } else if (animation instanceof MessageData) {
                         MessageData msg = (MessageData) animation;
@@ -76,8 +70,8 @@ public class CratesManager {
                     animationList.remove(0);
                 }
                 if (animationList.isEmpty()) {
-                    getRewardManager().giveRewardToPlayer(getRewardManager().getRandomRewardFromCrate(c), p);
-                    getHologramManager().hideOrRevealHologram(getHologramManager().crateHologram.get(c.getCrateName()), true);
+                    RewardManager.getInstance().giveRewardToPlayer(RewardManager.getInstance().getRandomRewardFromCrate(c), p);
+                    HologramManager.getInstance().hideOrRevealHologram(HologramManager.getInstance().crateHologram.get(c.getCrateName()), true);
                     cancel();
                 }
             }
@@ -85,7 +79,7 @@ public class CratesManager {
     }
 
     public Crates matchCrate (String crateName) {
-        for (Crates crate : getCratesManager().crates) {
+        for (Crates crate : CratesManager.getInstance().crates) {
             if (crate.getCrateName().toLowerCase().equals(crateName.toLowerCase())) {
                 return crate;
             }
@@ -93,10 +87,25 @@ public class CratesManager {
         return null;
     }
 
+    public void setCratePosition (String crateName, Location loc) {
+        FileManager.getInstance().getCratesLocationConfig().set("location."+crateName+".world", loc.getWorld().getName());
+        FileManager.getInstance().getCratesLocationConfig().set("location."+crateName+".x",loc.getX());
+        FileManager.getInstance().getCratesLocationConfig().set("location."+crateName+".y",loc.getY());
+        FileManager.getInstance().getCratesLocationConfig().set("location."+crateName+".z",loc.getZ());
+        FileManager.getInstance().saveCratesLocationConfig();
+        FileManager.getInstance().reloadCratesLocationConfig();
+        for (Crates c : crates) {
+            if (crateName.equals(c.getCrateName())) {
+                c.setCrateLocation(loc);
+            }
+        }
+        getMainInstance().reload();
+    }
+
     public void removeCratePosition (String crateName) {
-        getCratesLocationFile().getCratesLocationFile().set("location."+crateName, "");
-        getCratesLocationFile().saveCratesLocationFile();
-        getCratesLocationFile().reloadCratesLocationFile();
+        FileManager.getInstance().getCratesLocationConfig().set("location."+crateName, "");
+        FileManager.getInstance().saveCratesLocationConfig();
+        FileManager.getInstance().reloadCratesLocationConfig();
         for (Crates c : crates) {
             if (crateName.equals(c.getCrateName())) {
                 c.setCrateLocation(null);
@@ -108,7 +117,7 @@ public class CratesManager {
     public void initProtectedLocation () {
         protectedLocation.clear();
         cratesName.clear();
-        for (Crates c: getCratesManager().crates) {
+        for (Crates c: CratesManager.getInstance().crates) {
             cratesName.add(c.getInventoryNamePreview());
             protectedLocation.put(c.getCrateLocation(), c.getCrateName());
         }

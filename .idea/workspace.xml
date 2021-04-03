@@ -6,7 +6,47 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fd5b078d-5fc8-4555-978a-c48b73a7b64f" name="Default Changelist" comment="" />
+    <list default="true" id="fd5b078d-5fc8-4555-978a-c48b73a7b64f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/FileManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/animations/Animations$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/animations/Animations$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/animations/Animations$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/animations/Animations$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/animations/Animations.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/animations/Animations.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/commands/CratesCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/commands/CratesCommand.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/folders/CratesFile.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/folders/CratesLocationFile.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/folders/LanguageFile.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/folders/MissedRewardsFile.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/listeners/PlayerListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/listeners/PlayerListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/AnimationManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/AnimationManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/CratesDataManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/CratesDataManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/CratesManager$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/CratesManager$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/CratesManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/CratesManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/DataManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/DataManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/ErrorManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/ErrorManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/HologramManager$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/HologramManager$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/HologramManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/HologramManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/RewardManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/RewardManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/utils/Logger.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/utils/Logger.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/animations/Animations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/animations/Animations.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/commands/CratesCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/commands/CratesCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/folders/CratesFile.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/folders/CratesLocationFile.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/folders/LanguageFile.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/folders/MissedRewardsFile.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/listeners/PlayerListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/listeners/PlayerListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/AnimationManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/AnimationManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/CratesDataManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/CratesDataManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/CratesManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/CratesManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/DataManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/DataManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/ErrorManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/ErrorManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/HologramManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/HologramManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/RewardManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/RewardManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/utils/Logger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/utils/Logger.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,6 +58,9 @@
         <option value="Class" />
       </list>
     </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1ktJN670j3AN0JvbTYI39fA9IZN" />
   <component name="ProjectViewState">
@@ -31,6 +74,7 @@
     <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
     <property name="GenerateAntBuildDialog.outputFileNameProperty" value="crates" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../PaperSpigot-1.8.8-R0.1-SNAPSHOT-latest.jar!/" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
@@ -71,10 +115,6 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1616838176588" />
-    <state x="729" y="310" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1608371377188">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="729" y="310" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1608371377188" />
     <state x="765" y="223" key="#com.intellij.ide.util.MemberChooser" timestamp="1616866504439">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -83,10 +123,6 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="185" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1616835156091" />
-    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1608633841827">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1608633841827" />
     <state x="690" y="267" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog" timestamp="1611444324426">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -100,18 +136,18 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="440" y="94" key="SettingsEditor/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1616875472293" />
-    <state x="342" y="95" key="new project wizard" timestamp="1608309139355">
+    <state x="963" y="245" width="627" height="568" key="find.popup" timestamp="1617448400669">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="342" y="95" key="new project wizard/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1608309139355" />
+    <state x="963" y="245" width="627" height="568" key="find.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1617448400669" />
     <state x="702" y="130" key="refactoring.ChangeSignatureDialog" timestamp="1616851578020">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="702" y="130" key="refactoring.ChangeSignatureDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1616851578020" />
-    <state x="616" y="240" key="run.anything.popup" timestamp="1616849703364">
+    <state x="616" y="240" key="run.anything.popup" timestamp="1617437940718">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1616849703364" />
+    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1617437940718" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1616864145685">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

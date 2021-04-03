@@ -10,6 +10,16 @@ public class AnimationManager {
     public List<EpicSwordAnimation> animationStarted = new ArrayList<>();
     public List<RollAnimation> rollAnimations = new ArrayList<>();
 
+    private static AnimationManager instance;
+
+    public AnimationManager () {
+        instance = this;
+    }
+
+    public static AnimationManager getInstance() {
+        return instance;
+    }
+
     public void stopLoopAllAnimation () {
         for (EpicSwordAnimation ao : animationStarted) {ao.setStop(true);}
         for (RollAnimation r : rollAnimations) {r.setStop(true);}

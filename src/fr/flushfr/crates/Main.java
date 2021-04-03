@@ -2,10 +2,7 @@ package fr.flushfr.crates;
 
 import fr.flushfr.crates.animations.Animations;
 import fr.flushfr.crates.commands.CratesCommand;
-import fr.flushfr.crates.folders.CratesFile;
-import fr.flushfr.crates.folders.CratesLocationFile;
-import fr.flushfr.crates.folders.LanguageFile;
-import fr.flushfr.crates.folders.MissedRewardsFile;
+import fr.flushfr.crates.managers.FileManager;
 import fr.flushfr.crates.listeners.PlayerListener;
 import fr.flushfr.crates.managers.*;
 import fr.flushfr.crates.objects.Messages;
@@ -26,42 +23,6 @@ public class Main extends JavaPlugin {
     private static Main mainInstance;
     public static Main getMainInstance() {return mainInstance;}
 
-    private static CratesFile cratesInstance;
-    public static CratesFile getCratesFile() {return cratesInstance;}
-
-    private static CratesLocationFile cratesLocationFile;
-    public static CratesLocationFile getCratesLocationFile() {return cratesLocationFile;}
-
-    private static MissedRewardsFile missedRewardsFile;
-    public static MissedRewardsFile getMissedRewardsFile() {return missedRewardsFile;}
-
-    private static LanguageFile languageFile;
-    public static LanguageFile getLanguageFile() {return languageFile;}
-
-    private static HologramManager hologramManager;
-    public static HologramManager getHologramManager() {return hologramManager;}
-
-    private static AnimationManager animationManager;
-    public static AnimationManager getAnimationManager() {return animationManager;}
-
-    private static CratesDataManager cratesDataManager;
-    public static CratesDataManager getCratesDataManager() {return cratesDataManager;}
-
-    private static CratesManager cratesManager;
-    public static CratesManager getCratesManager() {return cratesManager;}
-
-    private static Animations animations;
-    public static Animations getAnimations() {return animations;}
-
-    private static RewardManager rewardManager;
-    public static RewardManager getRewardManager() {return rewardManager;}
-
-    private static ErrorManager errorManager;
-    public static ErrorManager getErrorManager() {return errorManager;}
-
-    private static Logger wLogger;
-    public static Logger getWLogger() {return wLogger;}
-
     public List<String> errorList = new ArrayList<>();
     public boolean isDisable = false;
 
@@ -69,9 +30,8 @@ public class Main extends JavaPlugin {
     public void onEnable () {
         initInstance();
 
-        getCratesLocationFile().saveDefaultCratesLocationFile();
-        getCratesFile().saveDefaultCratesFiles();
-        getLanguageFile().saveDefaultLanguageFile();
+        FileManager.getInstance().saveDefaultCratesFiles();
+        FileManager.getInstance().saveDefaultLanguageFile();
 
         reload();
         saveDefaultConfig();
@@ -82,18 +42,15 @@ public class Main extends JavaPlugin {
 
     public void initInstance () {
         mainInstance=this;
-        cratesInstance=new CratesFile();
-        cratesLocationFile = new CratesLocationFile();
-        missedRewardsFile = new MissedRewardsFile();
-        hologramManager = new HologramManager();
-        animationManager = new AnimationManager();
-        cratesDataManager = new CratesDataManager();
-        cratesManager = new CratesManager();
-        rewardManager = new RewardManager();
-        languageFile = new LanguageFile();
-        animations = new Animations();
-        errorManager = new ErrorManager();
-        wLogger = new Logger();
+        new FileManager();
+        new HologramManager();
+        new AnimationManager();
+        new CratesDataManager();
+        new CratesManager();
+        new RewardManager();
+        new Animations();
+        new ErrorManager();
+        new Logger();
     }
 
     public void onDisable () {
@@ -106,20 +63,20 @@ public class Main extends JavaPlugin {
 
     public void sendInformationConsole() {
         if (errorList.isEmpty()) {
-            getWLogger().spacer();
-            getWLogger().log(Level.INFO, "          Crates Plugin by Flush#3805");
-            getWLogger().log(Level.INFO, "");
-            getWLogger().log(Level.INFO, "> Loaded successfully");
-            getWLogger().spacer();
+            Logger.getInstance().spacer();
+            Logger.getInstance().log(Level.INFO, "          Crates Plugin by Flush#3805");
+            Logger.getInstance().log(Level.INFO, "");
+            Logger.getInstance().log(Level.INFO, "> Loaded successfully");
+            Logger.getInstance().spacer();
         } else {
-            getWLogger().spacer();
-            getWLogger().log(Level.INFO, "          Crates Plugin by Flush#3805");
-            getWLogger().log(Level.INFO, "");
-            getWLogger().log(Level.WARNING, "An error occurred while enabling");
+            Logger.getInstance().spacer();
+            Logger.getInstance().log(Level.INFO, "          Crates Plugin by Flush#3805");
+            Logger.getInstance().log(Level.INFO, "");
+            Logger.getInstance().log(Level.WARNING, "An error occurred while enabling");
             for (String error: errorList) {
-                getWLogger().log(Level.WARNING,  "- " + error );
+                Logger.getInstance().log(Level.WARNING,  "- " + error );
             }
-            getWLogger().spacer();
+            Logger.getInstance().spacer();
         }
     }
 
@@ -133,19 +90,18 @@ public class Main extends JavaPlugin {
 
         initInstance();
 
-        getCratesFile().saveDefaultCratesFiles();
-        getCratesLocationFile().reloadCratesLocationFile();
-        getMissedRewardsFile().reloadMissedRewardsFile();
+        FileManager.getInstance().reloadCratesLocationConfig();
+        FileManager.getInstance().reloadMissedRewardsConfig();
 
-        DataManager.initData(getLanguageFile().getLanguageFile());
+        DataManager.initData(FileManager.getInstance().getLanguageConfig());
 
-        getCratesFile().initCratesFiles();
-        getCratesDataManager().saveDataFromCratesFile();
+        FileManager.getInstance().initCratesFiles();
+        CratesDataManager.getInstance().saveDataFromCratesFile();
 
-        getCratesManager().initProtectedLocation();
+        CratesManager.getInstance().initProtectedLocation();
 
-        getHologramManager().launchHologramMultiColor();
-        getHologramManager().displayAllHologram();
+        HologramManager.getInstance().launchHologramMultiColor();
+        HologramManager.getInstance().displayAllHologram();
 
         Duration duration = Duration.between(start, ZonedDateTime.now());
         if (p!=null) {
@@ -161,8 +117,8 @@ public class Main extends JavaPlugin {
 
     public void disable () {
         isDisable = true;
-        getAnimationManager().stopLoopAllAnimation();
-        getHologramManager().removeAllHologram();
+        AnimationManager.getInstance().stopLoopAllAnimation();
+        HologramManager.getInstance().removeAllHologram();
     }
 
 }

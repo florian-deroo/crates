@@ -1,5 +1,6 @@
 package fr.flushfr.crates.listeners;
 
+import fr.flushfr.crates.managers.CratesManager;
 import fr.flushfr.crates.objects.Crates;
 import fr.flushfr.crates.objects.Messages;
 import fr.flushfr.crates.objects.Reward;
@@ -32,12 +33,12 @@ public class PlayerListener implements Listener {
         if (getMainInstance().isDisable) {
             return;
         }
-        for (Location loc: getCratesManager().protectedLocation.keySet()) {
+        for (Location loc: CratesManager.getInstance().protectedLocation.keySet()) {
             if(e.getClickedBlock().getLocation().getX()==loc.getX() && e.getClickedBlock().getLocation().getY()==loc.getY() && e.getClickedBlock().getLocation().getZ()==loc.getZ()) {
                 if (e.getAction()== Action.RIGHT_CLICK_BLOCK) {
                     Crates c = playerHoldKeyAndRemove(e.getPlayer());
                     if (c!=null) {
-                        getCratesManager().startAnimationList(c, e.getPlayer());
+                        CratesManager.getInstance().startAnimationList(c, e.getPlayer());
                     } else {
                         e.getPlayer().sendMessage(Messages.noKey);
                         Location l = e.getClickedBlock().getLocation();
@@ -55,7 +56,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void inventoryClick (InventoryClickEvent e) {
         if (getMainInstance().isDisable) {return;}
-        if(e.getSlot()!=-999 && getCratesManager().crates!= null && getCratesManager().cratesName.contains(e.getClickedInventory().getName()) && !getMainInstance().isDisable) {
+        if(e.getSlot()!=-999 && CratesManager.getInstance().crates!= null && CratesManager.getInstance().cratesName.contains(e.getClickedInventory().getName()) && !getMainInstance().isDisable) {
             e.setCancelled(true);
         }
     }
@@ -63,7 +64,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void blockBreak (BlockBreakEvent e) {
         if (getMainInstance().isDisable) {return;}
-        for (Location loc: getCratesManager().protectedLocation.keySet()) {
+        for (Location loc: CratesManager.getInstance().protectedLocation.keySet()) {
             if (e.getBlock().getLocation().getX()==loc.getX() && e.getBlock().getLocation().getY()==loc.getY() && e.getBlock().getLocation().getZ()==loc.getZ()) {
                 e.setCancelled(true);
             }
@@ -72,7 +73,7 @@ public class PlayerListener implements Listener {
 
     public Crates playerHoldKeyAndRemove (Player p) {
         ItemStack itemInHand =  p.getInventory().getItemInHand();
-        for (Crates c: getCratesManager().crates) {
+        for (Crates c: CratesManager.getInstance().crates) {
             ItemStack item = c.getKeyItem().build();
             if (item.getType() == itemInHand.getType() && itemInHand.hasItemMeta() && itemInHand.getItemMeta().hasDisplayName() && itemInHand.getItemMeta().getDisplayName().equals(item.getItemMeta().getDisplayName())) {
                 if(p.getInventory().getItemInHand().getAmount()==1) {
@@ -88,8 +89,8 @@ public class PlayerListener implements Listener {
 
     public void openCrateInventory (Location loc, Player p) {
         Inventory inv = null;
-        for (Crates c : getCratesManager().crates) {
-            if(getCratesManager().protectedLocation.get(loc).equals(c.getCrateName())) {
+        for (Crates c : CratesManager.getInstance().crates) {
+            if(CratesManager.getInstance().protectedLocation.get(loc).equals(c.getCrateName())) {
                 inv = Bukkit.createInventory(null, c.getRowsPreview()*9, c.getInventoryNamePreview());
                 for (Reward r: c.getRewards()) {
                     inv.addItem(r.getItemPresentation().build());

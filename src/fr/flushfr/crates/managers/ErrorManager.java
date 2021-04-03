@@ -16,6 +16,14 @@ import static fr.flushfr.crates.Main.getMainInstance;
 
 public class ErrorManager {
 
+    private static ErrorManager instance;
+    public ErrorManager () {
+        instance = this;
+    }
+    public static ErrorManager getInstance() {
+        return instance;
+    }
+
     public void addError (Error e) {
         if (e.getErrorCategory() == ErrorCategory.ITEM) {
             getMainInstance().errorList.add("File: "+e.getFileName() +", Item '"+e.getErrorSectionName()+"', "+ e.getVariableName()+" "+e.getErrorType());

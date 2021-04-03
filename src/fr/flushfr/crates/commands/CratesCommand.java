@@ -1,5 +1,8 @@
 package fr.flushfr.crates.commands;
 
+import fr.flushfr.crates.managers.FileManager;
+import fr.flushfr.crates.managers.CratesManager;
+import fr.flushfr.crates.managers.RewardManager;
 import fr.flushfr.crates.objects.Crates;
 import fr.flushfr.crates.objects.Messages;
 import fr.flushfr.crates.utils.Utils;
@@ -28,7 +31,7 @@ public class CratesCommand implements CommandExecutor {
                     commandSender.sendMessage(Messages.errorArgGiveCommand);
                     break;
                 }
-                Crates crate = getCratesManager().matchCrate(args[3]);
+                Crates crate = CratesManager.getInstance().matchCrate(args[3]);
                 if (crate==null) {
                     commandSender.sendMessage(Messages.noCrateMatch);
                     return true;
@@ -36,7 +39,7 @@ public class CratesCommand implements CommandExecutor {
                 switch (args[1].toLowerCase()) {
                     case "to":
                         try {
-                            getRewardManager().giveKeyToPlayer(args[2], crate, args.length<5 ? 1 : Integer.parseInt(args[4]));
+                            RewardManager.getInstance().giveKeyToPlayer(args[2], crate, args.length<5 ? 1 : Integer.parseInt(args[4]));
                             commandSender.sendMessage(Utils.replace(Messages.successfullyGive, "%player%", args[2]));
                         } catch (NumberFormatException | NullPointerException e) {
                             Bukkit.broadcastMessage(args[2]);
@@ -44,15 +47,15 @@ public class CratesCommand implements CommandExecutor {
                         break;
                     case "all":
                         for (Player p : Bukkit.getOnlinePlayers()) {
-                            getRewardManager().giveKeyToPlayer(p.getName(), crate, args.length<5 ? 1 : Integer.parseInt(args[4]));
+                            RewardManager.getInstance().giveKeyToPlayer(p.getName(), crate, args.length<5 ? 1 : Integer.parseInt(args[4]));
                         }
                         commandSender.sendMessage(Messages.successfullyGiveAll);
                         return true;
                 }
                 break;
             case "claim":
-                if (getRewardManager().hasPlayerMissedRewards(commandSender.getName())) {
-                    getRewardManager().giveMissedRewards(commandSender.getName());
+                if (RewardManager.getInstance().hasPlayerMissedRewards(commandSender.getName())) {
+                    RewardManager.getInstance().giveMissedRewards(commandSender.getName());
                 } else {
                     commandSender.sendMessage(Messages.noMissedRewards);
                 }
@@ -65,7 +68,7 @@ public class CratesCommand implements CommandExecutor {
                  getMainInstance().disable();
                  break;
             case "list":
-                 commandSender.sendMessage(getCratesFile().cratesFilesName.toString());
+                 commandSender.sendMessage(FileManager.getInstance().cratesFilesName.toString());
                  break;
         }
         if (args.length == 2) {
@@ -78,11 +81,11 @@ public class CratesCommand implements CommandExecutor {
                     break;
                 case "set":
                     commandSender.sendMessage(Messages.cratesLocationSet);
-                    getCratesManager().setCratePosition(args[1].toLowerCase(), ((Player) commandSender).getTargetBlock((HashSet<Byte>) null, 5).getLocation());
+                    CratesManager.getInstance().setCratePosition(args[1].toLowerCase(), ((Player) commandSender).getTargetBlock((HashSet<Byte>) null, 5).getLocation());
                     break;
                 case "remove":
                     commandSender.sendMessage(Messages.cratesLocationRemoved);
-                    getCratesManager().removeCratePosition(args[1].toLowerCase());
+                    CratesManager.getInstance().removeCratePosition(args[1].toLowerCase());
                     break;
                 default:
                     commandSender.sendMessage(Messages.errorCommand);

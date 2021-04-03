@@ -81,6 +81,9 @@ public class CratesDataManager {
                 case "playsound":
                     animationList.add(getSoundInformation(f, "animation."+s, fileName, "sound", "volume", "pitch"));
                     break;
+                case "simple_rotation":
+                    animationList.add(extractSimpleRotationAnimation(f, "animation."+s, fileName));
+                    break;
             }
         }
         return animationList;
@@ -93,6 +96,20 @@ public class CratesDataManager {
             data.put(dataName, f.getString(path+"."+dataName));
         }
         return data;
+    }
+
+    public SimpleRotationData extractSimpleRotationAnimation (FileConfiguration f, String path, String fileName) {
+        HashMap<String, String> data = getDataFromAnimation(path, f);
+        String rewardNameHologram = "";
+        for (String dataName : data.keySet()) {
+            if (dataName.equals("reward-name")) {
+                rewardNameHologram = data.get(dataName);
+            }
+        }
+        if (rewardNameHologram.equals("")) {
+            ErrorManager.getInstance().addError(new Error(ErrorCategory.ANIMATION, fileName, path, "reward-name", ErrorType.UNDEFINED));
+        }
+        return new SimpleRotationData(rewardNameHologram);
     }
 
     public SoundData getSoundInformation (FileConfiguration f, String path, String fileName, String soundVariableName, String volumeVariableName, String pitchVariableName) {

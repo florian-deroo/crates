@@ -3,16 +3,17 @@ package fr.flushfr.crates.animations;
 import fr.flushfr.crates.managers.AnimationManager;
 import fr.flushfr.crates.managers.HologramManager;
 import fr.flushfr.crates.objects.Crates;
+import fr.flushfr.crates.objects.Reward;
 import fr.flushfr.crates.objects.animation.data.EpicSwordData;
 import fr.flushfr.crates.objects.animation.data.FireworkData;
 import fr.flushfr.crates.objects.animation.data.RollData;
+import fr.flushfr.crates.objects.animation.data.SimpleRotationData;
 import fr.flushfr.crates.objects.animation.process.AnimationStatus;
 import fr.flushfr.crates.objects.animation.process.EpicSwordAnimation;
 import fr.flushfr.crates.objects.animation.process.RollAnimation;
-import org.bukkit.Bukkit;
-import org.bukkit.Effect;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Location;
+import fr.flushfr.crates.objects.animation.process.SimpleRotationAnimation;
+import fr.flushfr.crates.utils.Utils;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftFirework;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Firework;
@@ -26,15 +27,59 @@ import static fr.flushfr.crates.Main.getMainInstance;
 public class Animations {
 
     private static Animations instance;
-
     public Animations () {
         instance = this;
     }
-
     public static Animations getInstance() {
         return instance;
     }
 
+
+    public void startSimpleAnimation (Crates c, SimpleRotationData simpleRotationData, AnimationStatus animationStatus, Reward reward) {
+        Location l = c.getCrateLocation().clone();
+        l.setX(l.getX()+0.5);
+        l.setZ(l.getZ()+0.5);
+        SimpleRotationAnimation s = new SimpleRotationAnimation(HologramManager.getInstance().spawnHologram(l, "", "toRemove"), l);
+        HologramManager.getInstance().addHologramToRemove(s.getArmorStand());
+        s.getArmorStand().setVisible(true);
+        ItemStack item = new ItemStack(Material.ENDER_CHEST);
+        s.getArmorStand().setVisible(false);
+        s.getArmorStand().setCanPickupItems(false);
+        s.getArmorStand().setItemInHand(item);
+        s.getArmorStand().setRightArmPose(new EulerAngle(Math.toRadians(-20),Math.toRadians(-45),Math.toRadians(0)));
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (s.isStop()) {
+                    cancel();
+                }
+                if (s.getIterator()<72) {
+                    s.getLocation().setY(s.getLocation().getY()+0.03);
+                    s.getLocation().setYaw(s.getLocation().getYaw()+10);
+                    s.getArmorStand().teleport(s.getLocation());
+                    if (s.getIterator()%2==0) {
+                        Location particleLoc = s.getLocation().clone();
+                        particleLoc.setY(particleLoc.getY()+0.45);
+                        s.getLocation().getWorld().playEffect(particleLoc, Effect.HAPPY_VILLAGER,10);
+                    }
+
+                } else if (s.getIterator()==73) {
+                    s.setArmorStandRewardName(HologramManager.getInstance().spawnHologram(l, Utils.color(simpleRotationData.getRewardNameHologram().replaceAll("%item-name%", reward.getItemPresentation().getName().equals("") ? reward.getItemPresentation().build().getType().name() : reward.getItemPresentation().getName()).replaceAll("%amount%", reward.getItemPresentation().build().getAmount()+"").replaceAll("%chance%", reward.getProbability()+"")), "toRemove"));
+                    HologramManager.getInstance().addHologramToRemove(s.getArmorStandRewardName());
+                    for (int i = 0; i<10;i++) {
+                        s.getLocation().getWorld().playEffect(s.getLocation(), Effect.FIREWORKS_SPARK, 10, 10);
+                    }
+                } else if (s.getIterator()>100) {
+                    animationStatus.setEnded(true);
+                    s.getArmorStand().remove();
+                    s.getArmorStandRewardName().remove();
+                    cancel();
+                }
+
+                s.setIterator(s.getIterator()+1);
+            }
+        }.runTaskTimer(getMainInstance(),1L,1L);
+    }
 
     public void startEpicSwordAnimation(Crates c, EpicSwordData epicSwordData, AnimationStatus animationStatus) {
         EpicSwordAnimation AO=new EpicSwordAnimation(c.getCrateLocation());

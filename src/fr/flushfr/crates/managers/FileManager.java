@@ -46,7 +46,7 @@ public class FileManager {
     String pathCratesLocationConfig = "data/crates-location.yml";
 
     public void reloadCratesLocationConfig() {
-        missedRewardConfig = initConfigFile(pathCratesLocationConfig, new File(getMainInstance().getDataFolder(), pathCratesLocationConfig));
+        cratesLocationConfig = initConfigFile(pathCratesLocationConfig, new File(getMainInstance().getDataFolder(), pathCratesLocationConfig));
     }
 
     public FileConfiguration getCratesLocationConfig() {
@@ -72,7 +72,7 @@ public class FileManager {
     String pathLanguageConfig = "lang/"+getMainInstance().getConfig().getString("language")+".yml";
 
     public void reloadLanguageConfig() {
-        missedRewardConfig = initConfigFile(pathLanguageConfig, new File(getMainInstance().getDataFolder(), pathLanguageConfig));
+        languageConfig = initConfigFile(pathLanguageConfig, new File(getMainInstance().getDataFolder(), pathLanguageConfig));
     }
 
     public FileConfiguration getLanguageConfig() {
@@ -161,5 +161,6 @@ public class FileManager {
             cratesFiles.put(customConfigFileConfig,file.replaceAll(".yml",""));
         }
     }
+
 
 }

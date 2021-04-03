@@ -90,10 +90,12 @@ public class Main extends JavaPlugin {
 
         initInstance();
 
+        FileManager.getInstance().saveDefaultCratesFiles();
         FileManager.getInstance().reloadCratesLocationConfig();
         FileManager.getInstance().reloadMissedRewardsConfig();
 
         DataManager.initData(FileManager.getInstance().getLanguageConfig());
+
 
         FileManager.getInstance().initCratesFiles();
         CratesDataManager.getInstance().saveDataFromCratesFile();

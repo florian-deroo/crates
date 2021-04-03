@@ -1,13 +1,14 @@
 package fr.flushfr.crates.commands;
 
-import fr.flushfr.crates.managers.FileManager;
+import fr.flushfr.crates.animations.Animations;
 import fr.flushfr.crates.managers.CratesManager;
+import fr.flushfr.crates.managers.FileManager;
 import fr.flushfr.crates.managers.RewardManager;
 import fr.flushfr.crates.objects.Crates;
 import fr.flushfr.crates.objects.Messages;
+import fr.flushfr.crates.objects.animation.process.AnimationStatus;
 import fr.flushfr.crates.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,14 +16,13 @@ import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 
-import static fr.flushfr.crates.Main.*;
+import static fr.flushfr.crates.Main.getMainInstance;
 
 public class CratesCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
         if (args.length == 0) {
-            Effect.valueOf("eeeee");
             return true;
         }
         switch (args[0].toLowerCase()) {

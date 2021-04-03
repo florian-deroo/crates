@@ -2,8 +2,10 @@ package fr.flushfr.crates.managers;
 
 import fr.flushfr.crates.animations.Animations;
 import fr.flushfr.crates.objects.Crates;
+import fr.flushfr.crates.objects.Reward;
 import fr.flushfr.crates.objects.animation.data.*;
 import fr.flushfr.crates.objects.animation.process.AnimationStatus;
+import fr.flushfr.crates.objects.animation.process.SimpleRotationAnimation;
 import fr.flushfr.crates.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,7 +38,7 @@ public class CratesManager {
         List<Object> animationList = new ArrayList<>(c.getAnimationList());
         for (Object ignored : animationList) {animationStatus.add(new AnimationStatus(false , false));}
         HologramManager.getInstance().hideOrRevealHologram(HologramManager.getInstance().crateHologram.get(c.getCrateName()), false);
-
+        Reward reward = RewardManager.getInstance().getRandomRewardFromCrate(c);
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -63,6 +65,8 @@ public class CratesManager {
                         SoundData soundData = (SoundData) animation;
                         p.playSound(c.getCrateLocation(), soundData.getSound(), soundData.getVolume(),soundData.getPitch());
                         currentAnimationStatus.setEnded(true);
+                    } else if (animation instanceof SimpleRotationData) {
+                        Animations.getInstance().startSimpleAnimation(c,(SimpleRotationData) animation,  currentAnimationStatus, reward);
                     }
                 }
                 if (currentAnimationStatus.isEnded()) {

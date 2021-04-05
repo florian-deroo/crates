@@ -1,5 +1,6 @@
 package fr.flushfr.crates.managers;
 
+import fr.flushfr.crates.objects.animation.process.CSGOAnimation;
 import fr.flushfr.crates.objects.animation.process.EpicSwordAnimation;
 import fr.flushfr.crates.objects.animation.process.RollAnimation;
 import fr.flushfr.crates.objects.animation.process.SimpleRotationAnimation;
@@ -11,6 +12,7 @@ public class AnimationManager {
     public List<EpicSwordAnimation> animationStarted = new ArrayList<>();
     public List<RollAnimation> rollAnimations = new ArrayList<>();
     public List<SimpleRotationAnimation> simpleRewardAnimations = new ArrayList<>();
+    public List<CSGOAnimation> csgoAnimations = new ArrayList<>();
 
     private static AnimationManager instance;
 
@@ -26,5 +28,6 @@ public class AnimationManager {
         for (EpicSwordAnimation ao : animationStarted) {ao.setStop(true);}
         for (RollAnimation r : rollAnimations) {r.setStop(true);}
         for (SimpleRotationAnimation s : simpleRewardAnimations) {s.setStop(true);}
+        for (CSGOAnimation c : csgoAnimations) {c.setStop(true);}
     }
 }

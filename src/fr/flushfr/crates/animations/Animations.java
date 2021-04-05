@@ -4,23 +4,22 @@ import fr.flushfr.crates.managers.AnimationManager;
 import fr.flushfr.crates.managers.HologramManager;
 import fr.flushfr.crates.objects.Crates;
 import fr.flushfr.crates.objects.Reward;
-import fr.flushfr.crates.objects.animation.data.EpicSwordData;
-import fr.flushfr.crates.objects.animation.data.FireworkData;
-import fr.flushfr.crates.objects.animation.data.RollData;
-import fr.flushfr.crates.objects.animation.data.SimpleRotationData;
-import fr.flushfr.crates.objects.animation.process.AnimationStatus;
-import fr.flushfr.crates.objects.animation.process.EpicSwordAnimation;
-import fr.flushfr.crates.objects.animation.process.RollAnimation;
-import fr.flushfr.crates.objects.animation.process.SimpleRotationAnimation;
+import fr.flushfr.crates.objects.animation.data.*;
+import fr.flushfr.crates.objects.animation.process.*;
 import fr.flushfr.crates.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftFirework;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Firework;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static fr.flushfr.crates.Main.getMainInstance;
 
@@ -34,6 +33,52 @@ public class Animations {
         return instance;
     }
 
+
+    public List<Player> reOpenInventory = new ArrayList<>();
+
+    public int updateInventory (Crates c, Inventory inv, int k, Location location, SoundData sound) {
+        location.getWorld().playSound(location, sound.getSound(), sound.getVolume(),sound.getPitch());
+        for (int i = 0; i<27; i++) {
+            inv.setItem( i, new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) (k%15)));
+        }
+        for (int i = 9; i<16; i++) {
+            inv.setItem(i+1, c.getRewards().get(k%c.getRewards().size()).getItemPresentation().build());
+            k++;
+        }
+        return k;
+    }
+
+    public void startCSGOAnimation (Crates c, CSGOData csgoData, AnimationStatus animationStatus, Player p, Reward reward) {
+        CSGOAnimation csgoAnimation = new CSGOAnimation(p);
+        Inventory csgoInv = Bukkit.createInventory(null, 27, csgoData.getInventoryName());
+        p.openInventory(csgoInv);
+        AnimationManager.getInstance().csgoAnimations.add(csgoAnimation);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (reOpenInventory.contains(p)) {
+                    p.openInventory(csgoInv);
+                }
+                if (csgoAnimation.getA()<40 && csgoAnimation.getA()%4==0) {
+                    csgoAnimation.setB(updateInventory(c, csgoInv, csgoAnimation.getB(), p.getLocation(), csgoData.getSoundOnRolling()));
+                } else if (csgoAnimation.getA()>=50 && csgoAnimation.getA()<100 && csgoAnimation.getA()%10==0) {
+                    csgoAnimation.setB(updateInventory(c, csgoInv, csgoAnimation.getB(), p.getLocation(), csgoData.getSoundOnRolling()));
+                } else if (csgoAnimation.getA()>=100 && csgoAnimation.getA()<=140 && csgoAnimation.getA()%20==0) {
+                    csgoAnimation.setB(updateInventory(c, csgoInv, csgoAnimation.getB(), p.getLocation(), csgoData.getSoundOnRolling()));
+                } else if (csgoAnimation.getA()>140 && csgoAnimation.getA()%20==0) {
+                    if (Utils.isSimilar(reward.getItemPresentation().build(), csgoInv.getItem(13), false)) {
+                        p.getLocation().getWorld().playSound(p.getLocation(), csgoData.getSoundEnd().getSound(), csgoData.getSoundEnd().getVolume(),csgoData.getSoundEnd().getPitch());
+                        p.closeInventory();
+                        animationStatus.setEnded(true);
+                        cancel();
+                    } else {
+                        csgoAnimation.setB(updateInventory(c, csgoInv, csgoAnimation.getB(), p.getLocation(), csgoData.getSoundOnRolling()));
+                    }
+                }
+                csgoAnimation.setA(csgoAnimation.getA()+1);
+            }
+        }.runTaskTimer(getMainInstance(),0L,1L);
+    }
 
     public void startSimpleAnimation (Crates c, SimpleRotationData simpleRotationData, AnimationStatus animationStatus, Reward reward) {
         Location l = c.getCrateLocation().clone();

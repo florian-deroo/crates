@@ -9,6 +9,7 @@ import fr.flushfr.crates.objects.Messages;
 import fr.flushfr.crates.utils.Logger;
 import fr.flushfr.crates.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -80,7 +81,7 @@ public class Main extends JavaPlugin {
         }
     }
 
-    public void reload(Player p) {
+    public void reload(CommandSender p) {
 
         disable();
         errorList.clear();

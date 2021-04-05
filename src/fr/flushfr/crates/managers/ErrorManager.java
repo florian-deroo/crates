@@ -37,6 +37,12 @@ public class ErrorManager {
         if (e.getErrorCategory() == ErrorCategory.SOUND) {
             getMainInstance().errorList.add("File: "+e.getFileName() +", "+e.getVariableName()+" in '"+e.getErrorSectionName()+"' "+e.getErrorType());
         }
+        if (e.getErrorCategory() == ErrorCategory.PREVIEW) {
+            getMainInstance().errorList.add("File: "+e.getFileName() +", "+e.getVariableName()+" in '"+e.getErrorSectionName()+"' "+e.getErrorType());
+        }
+        if (e.getErrorCategory() == ErrorCategory.MATERIAL_INVALID) {
+            getMainInstance().errorList.add("File: "+e.getFileName() +", "+e.getVariableName()+" in '"+e.getErrorSectionName()+"' "+e.getErrorType());
+        }
     }
 
     public int getInt(FileConfiguration f, String path) {
@@ -123,13 +129,17 @@ public class ErrorManager {
     }
 
     public SoundData getSound(Error error, String soundName, float volume, float pitch) {
-        Sound s;
+        Sound s = Sound.NOTE_PLING;
         try {
-            s = Sound.valueOf(soundName);
+            if (soundName.equals("")) {
+                error.setErrorType(ErrorType.UNDEFINED);
+                addError(error);
+            } else {
+                s = Sound.valueOf(soundName);
+            }
         } catch (IllegalArgumentException e) {
             error.setErrorType(ErrorType.INCORRECT_SOUND);
             addError(error);
-            s = Sound.GLASS;
         }
         if (volume==0) {
             volume = 1;

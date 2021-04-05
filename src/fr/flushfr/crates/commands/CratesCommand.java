@@ -62,8 +62,8 @@ public class CratesCommand implements CommandExecutor {
                 break;
             case "reload":
             case "enable":
-                 getMainInstance().reload((Player) commandSender);
-                 break;
+                getMainInstance().reload(commandSender);
+                break;
             case "disable":
                  getMainInstance().disable();
                  break;

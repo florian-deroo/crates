@@ -2,7 +2,6 @@ package fr.flushfr.crates.managers;
 
 import fr.flushfr.crates.objects.Messages;
 import fr.flushfr.crates.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 

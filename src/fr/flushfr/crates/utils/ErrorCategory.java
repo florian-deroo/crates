@@ -5,6 +5,7 @@ public enum ErrorCategory {
     MATERIAL_INVALID,
     ANIMATION,
     SOUND,
+    PREVIEW,
     MESSAGE,
     UNDEFINED
 }

@@ -12,9 +12,7 @@ import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class CratesDataManager {
 
@@ -35,13 +33,11 @@ public class CratesDataManager {
     }
 
     public void getDataCrates (FileConfiguration f, String file) {
-        boolean isBuyEnable = f.getBoolean("buy.enable");
-        int costKey = f.getInt("buy.cost");
-        ItemBuilder keyItem = new ItemBuilder(new ItemStack(Material.getMaterial(f.getInt("open-key.id"))));
-        keyItem.data(f.getInt("open-key.data"));
-        keyItem.name(Utils.color(f.getString("open-key.name")));
-        keyItem.addLore(Utils.colorList(f.getStringList("open-key.lore")));
-        List<String> hologramAmbient = Utils.colorList(f.getStringList("hologram"));
+        ItemBuilder keyItem = new ItemBuilder(new ItemStack(Material.getMaterial(ErrorManager.getInstance().getInt(f, "open-key.id", new Error(ErrorCategory.ITEM, file, "open-key", "id", ErrorType.UNDEFINED)))));
+        keyItem.data(ErrorManager.getInstance().getInt(f, "open-key.data"));
+        keyItem.name(Utils.color(ErrorManager.getInstance().getString(f,"open-key.name")));
+        keyItem.addLore(Utils.colorList(ErrorManager.getInstance().getStringList(f,"open-key.lore")));
+        List<String> hologramAmbient = Utils.colorList(ErrorManager.getInstance().getStringList(f,"hologram"));
         List<Reward> rewards = getRewards(f, file);
         int totalProbability = 0;
         for (Reward r:rewards) {totalProbability+=r.getProbability();}
@@ -52,16 +48,18 @@ public class CratesDataManager {
         Location crateLocation = new Location(world, x, y, z);
         Location hologramLocation = new Location(world, x+0.5, y, z+0.5);
         boolean isPreviewEnable = f.getBoolean("preview.enable");
-        int rowsPreview = f.getInt("preview.rows");
-        String inventoryNamePreview = Utils.color(f.getString("preview.inventory-name"));
-        String openMessageToPlayer = Utils.color(f.getString("message.open"));
-        String finishBroadcast = Utils.color(f.getString("message.broadcast-on-finish"));
-        CratesManager.getInstance().crates.add(new Crates(file, getAnimationList(f, file), isBuyEnable, costKey, keyItem, rewards, isPreviewEnable, rowsPreview, openMessageToPlayer, crateLocation, hologramLocation, finishBroadcast, inventoryNamePreview, hologramAmbient, totalProbability));
+        int rowsPreview = ErrorManager.getInstance().getInt(f,"preview.rows", new Error(ErrorCategory.PREVIEW, file, "preview", "rows", ErrorType.UNDEFINED));
+        String inventoryNamePreview = Utils.color(ErrorManager.getInstance().getString(f,"preview.inventory-name", new Error(ErrorCategory.PREVIEW, file, "preview", "inventory-name", ErrorType.UNDEFINED)));
+        CratesManager.getInstance().crates.add(new Crates(file, getAnimationList(f, file), keyItem, rewards, isPreviewEnable, rowsPreview, crateLocation, hologramLocation, inventoryNamePreview, hologramAmbient, totalProbability));
     }
 
     public List<Object> getAnimationList (FileConfiguration f, String fileName) {
         List<Object> animationList = new ArrayList<>();
-        for (String s: f.getConfigurationSection("animation").getKeys(false)) {
+        Set<String> animationStringList = new HashSet<>();
+        try {
+            animationStringList = f.getConfigurationSection("animation").getKeys(false);
+        } catch (NullPointerException ignored) {}
+        for (String s: animationStringList) {
             switch (ErrorManager.getInstance().getString(f,"animation."+s+".type", new Error(ErrorCategory.ANIMATION, fileName,s, "type")).toLowerCase()) {
                 case "firework":
                     animationList.add(extractFireworkData(getDataFromAnimation("animation."+s, f)));
@@ -83,6 +81,9 @@ public class CratesDataManager {
                     break;
                 case "simple_rotation":
                     animationList.add(extractSimpleRotationAnimation(f, "animation."+s, fileName));
+                    break;
+                case "csgo":
+                    animationList.add(extractCSGOAnimation(f, "animation."+s, fileName));
                     break;
             }
         }
@@ -110,6 +111,22 @@ public class CratesDataManager {
             ErrorManager.getInstance().addError(new Error(ErrorCategory.ANIMATION, fileName, path, "reward-name", ErrorType.UNDEFINED));
         }
         return new SimpleRotationData(rewardNameHologram);
+    }
+
+    public CSGOData extractCSGOAnimation (FileConfiguration f, String path, String fileName) {
+        HashMap<String, String> data = getDataFromAnimation(path, f);
+        SoundData endSound = getSoundInformation(f, path, fileName, "end-sound", "end-volume", "end-pitch");
+        SoundData rollSound = getSoundInformation(f, path, fileName, "roll-sound", "roll-volume", "roll-pitch");
+        String inventoryName = "";
+        for (String dataName : data.keySet()) {
+            if (dataName.equals("inventory-name")) {
+                inventoryName = data.get(dataName);
+            }
+        }
+        if (inventoryName.equals("")) {
+            ErrorManager.getInstance().addError(new Error(ErrorCategory.ANIMATION, fileName, path, "inventory-name", ErrorType.UNDEFINED));
+        }
+        return new CSGOData(Utils.color(inventoryName), rollSound, endSound);
     }
 
     public SoundData getSoundInformation (FileConfiguration f, String path, String fileName, String soundVariableName, String volumeVariableName, String pitchVariableName) {
@@ -150,7 +167,6 @@ public class CratesDataManager {
         int position = 0;
         ItemStack item1 = new ItemStack(Material.DIAMOND_SWORD);
         ItemStack item2 = new ItemStack(Material.GOLD_SWORD);
-        Effect particle = null;
         Material m;
         for (String dataName : data.keySet()) {
             switch (dataName) {

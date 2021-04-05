@@ -82,6 +82,9 @@ public class HologramManager {
 
 
     public void hideOrRevealHologram (List<ArmorStand> armorStandList, boolean visible) {
+        if (armorStandList.isEmpty()) {
+            return;
+        }
         if (!visible) {
             for (ArmorStand armorStand : armorStandList) {
                 armorStand.setCustomNameVisible(false);

@@ -1,8 +1,10 @@
 package fr.flushfr.crates.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.command.CommandSender;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,6 +60,33 @@ public class Utils {
         return listToArray(replacedList);
     }
 
+    public static boolean isSimilar(ItemStack first, ItemStack second, boolean ignoreAmount){
+
+        boolean similar = false;
+
+        if(first == null || second == null){
+            return similar;
+        }
+
+        boolean sameTypeId = (first.getTypeId() == second.getTypeId());
+        boolean sameDurability = (first.getDurability() == second.getDurability());
+        boolean sameAmount = (first.getAmount() == second.getAmount());
+        boolean sameHasItemMeta = (first.hasItemMeta() == second.hasItemMeta());
+        boolean sameEnchantments = (first.getEnchantments().equals(second.getEnchantments()));
+        boolean sameItemMeta = true;
+
+        if(sameHasItemMeta) {
+            sameItemMeta = Bukkit.getItemFactory().equals(first.getItemMeta(), second.getItemMeta());
+        }
+
+        if(sameTypeId && sameDurability && (sameAmount || ignoreAmount) && sameHasItemMeta && sameEnchantments && sameItemMeta){
+            similar = true;
+        }
+
+        return similar;
+
+    }
+
     public static String[] replace (String[] args, String value, String toReplace) {
         HashMap<String, String> toReplaceHashMap = new HashMap<>();
         toReplaceHashMap.put(value, toReplace);
@@ -68,6 +97,33 @@ public class Utils {
         HashMap<String, String> toReplaceHashMap = new HashMap<>();
         toReplaceHashMap.put(value1, toReplace1);
         toReplaceHashMap.put(value2, toReplace2);
+        return replace(args, toReplaceHashMap);
+    }
+
+    public static String[] replace (String[] args, String value1, String toReplace1,  String value2, String toReplace2, String value3, String toReplace3) {
+        HashMap<String, String> toReplaceHashMap = new HashMap<>();
+        toReplaceHashMap.put(value1, toReplace1);
+        toReplaceHashMap.put(value2, toReplace2);
+        toReplaceHashMap.put(value3, toReplace3);
+        return replace(args, toReplaceHashMap);
+    }
+
+    public static String[] replace (String[] args, String value1, String toReplace1,  String value2, String toReplace2, String value3, String toReplace3, String value4, String toReplace4) {
+        HashMap<String, String> toReplaceHashMap = new HashMap<>();
+        toReplaceHashMap.put(value1, toReplace1);
+        toReplaceHashMap.put(value2, toReplace2);
+        toReplaceHashMap.put(value3, toReplace3);
+        toReplaceHashMap.put(value4, toReplace4);
+        return replace(args, toReplaceHashMap);
+    }
+
+    public static String[] replace (String[] args, String value1, String toReplace1,  String value2, String toReplace2, String value3, String toReplace3, String value4, String toReplace4,  String value5, String toReplace5) {
+        HashMap<String, String> toReplaceHashMap = new HashMap<>();
+        toReplaceHashMap.put(value1, toReplace1);
+        toReplaceHashMap.put(value2, toReplace2);
+        toReplaceHashMap.put(value3, toReplace3);
+        toReplaceHashMap.put(value4, toReplace4);
+        toReplaceHashMap.put(value5, toReplace5);
         return replace(args, toReplaceHashMap);
     }
 

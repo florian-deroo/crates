@@ -5,7 +5,6 @@ import fr.flushfr.crates.objects.Crates;
 import fr.flushfr.crates.objects.Reward;
 import fr.flushfr.crates.objects.animation.data.*;
 import fr.flushfr.crates.objects.animation.process.AnimationStatus;
-import fr.flushfr.crates.objects.animation.process.SimpleRotationAnimation;
 import fr.flushfr.crates.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,7 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static fr.flushfr.crates.Main.*;
+import static fr.flushfr.crates.Main.getMainInstance;
 
 public class CratesManager {
 
@@ -39,6 +38,10 @@ public class CratesManager {
         for (Object ignored : animationList) {animationStatus.add(new AnimationStatus(false , false));}
         HologramManager.getInstance().hideOrRevealHologram(HologramManager.getInstance().crateHologram.get(c.getCrateName()), false);
         Reward reward = RewardManager.getInstance().getRandomRewardFromCrate(c);
+        if (animationStatus.isEmpty()) {
+            RewardManager.getInstance().giveRewardToPlayer(RewardManager.getInstance().getRandomRewardFromCrate(c), p);
+            return;
+        }
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -56,9 +59,9 @@ public class CratesManager {
                     } else if (animation instanceof MessageData) {
                         MessageData msg = (MessageData) animation;
                         if (msg.isEveryone()) {
-                            for (Player player:Bukkit.getOnlinePlayers()) {player.sendMessage(Utils.replace(msg.getMessage(), "%player%", ChatColor.stripColor(p.getDisplayName()), "%crate%", c.getCrateName()));}
+                            for (String toSend : Utils.replace(msg.getMessage(), "%player%", ChatColor.stripColor(p.getDisplayName()), "%crate%", c.getCrateName(), "%amount%", reward.getItemToGive().build().getAmount()+"", "%chance%", reward.getProbability()+"", "%reward%", reward.getItemToGive().getName().equals("")?reward.getItemToGive().build().getType()+"":reward.getItemToGive().getName())) {Bukkit.broadcastMessage(toSend);}
                         } else {
-                            p.sendMessage(Utils.replace(msg.getMessage(), "%player%",  ChatColor.stripColor(p.getDisplayName()), "%crate%", c.getCrateName()));
+                            p.sendMessage(Utils.replace(msg.getMessage(), "%player%",  ChatColor.stripColor(p.getDisplayName()), "%crate%", c.getCrateName(), "%amount%", reward.getItemToGive().build().getAmount()+"", "%chance%", reward.getProbability()+"", "%reward%",  reward.getItemToGive().getName().equals("")?reward.getItemToGive().build().getType()+"":reward.getItemToGive().getName()));
                         }
                         currentAnimationStatus.setEnded(true);
                     } else if (animation instanceof SoundData) {
@@ -67,6 +70,8 @@ public class CratesManager {
                         currentAnimationStatus.setEnded(true);
                     } else if (animation instanceof SimpleRotationData) {
                         Animations.getInstance().startSimpleAnimation(c,(SimpleRotationData) animation,  currentAnimationStatus, reward);
+                    } else if (animation instanceof CSGOData) {
+                        Animations.getInstance().startCSGOAnimation(c, (CSGOData) animation,   currentAnimationStatus,p, reward);
                     }
                 }
                 if (currentAnimationStatus.isEnded()) {

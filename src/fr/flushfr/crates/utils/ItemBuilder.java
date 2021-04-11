@@ -1,7 +1,12 @@
 package fr.flushfr.crates.utils;
 
+import fr.flushfr.crates.managers.ErrorManager;
+import fr.flushfr.crates.objects.Error;
+import fr.flushfr.crates.objects.ErrorCategory;
+import fr.flushfr.crates.objects.ErrorType;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -17,8 +22,14 @@ import java.util.function.Consumer;
 
 public class ItemBuilder {
 
-    private final ItemStack item;
-    private final ItemMeta meta;
+    private ItemStack item;
+    private ItemMeta meta;
+
+    public ItemBuilder copy() {
+        ItemStack i = item.clone();
+        i.setItemMeta(meta);
+        return new ItemBuilder(i);
+    }
 
     public ItemBuilder(Material material) {
         this(new ItemStack(material));
@@ -65,22 +76,25 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder enchant(Enchantment enchantment) {
-        return enchant(enchantment, 1);
-    }
 
-    public ItemBuilder enchant(Enchantment enchantment, int level) {
-        meta.addEnchant(enchantment, level, true);
-        return this;
-    }
-
-    public ItemBuilder enchant(List<String> enchantment) {
+    public ItemBuilder enchant(FileConfiguration f, String path, String fileName) {
+        List<String> enchantment = ErrorManager.getInstance().getStringList(f, path + ".display.enchantment");
         if (!(enchantment==null)) {
             for (String e:enchantment) {
                 String[] parts = e.split(":");
-                String enchantement = parts[0];
-                String level = parts[1];
-                meta.addEnchant(Enchantment.getByName(enchantement), Integer.parseInt(level), true);
+                Enchantment enchantement = Enchantment.getByName(parts[0]);
+                String levelString = parts[1];
+                int levelId = 1;
+                try {
+                    levelId = Integer.parseInt(levelString);
+                } catch (NumberFormatException exception) {
+                    ErrorManager.getInstance().addError(new Error(ErrorCategory.ITEM, fileName, path, "level enchantment", ErrorType.INCORRECT_INTEGER));
+                }
+                if (enchantement == null) {
+                    enchantement = Enchantment.DURABILITY;
+                    ErrorManager.getInstance().addError(new Error(ErrorCategory.ITEM, fileName, path, "enchantment", ErrorType.INCORRECT));
+                }
+                meta.addEnchant(enchantement, levelId, true);
             }
         }
         return this;
@@ -140,10 +154,6 @@ public class ItemBuilder {
     public ItemBuilder lore(List<String> lore) {
         meta.setLore(lore);
         return this;
-    }
-
-    public ItemBuilder copy() {
-        return new ItemBuilder(item);
     }
 
     public ItemBuilder addLore(String line) {

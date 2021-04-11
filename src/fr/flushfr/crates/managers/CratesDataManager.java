@@ -1,18 +1,16 @@
 package fr.flushfr.crates.managers;
 
-import fr.flushfr.crates.objects.Crates;
+import fr.flushfr.crates.objects.*;
 import fr.flushfr.crates.objects.Error;
-import fr.flushfr.crates.objects.Reward;
 import fr.flushfr.crates.objects.animation.data.*;
-import fr.flushfr.crates.utils.ErrorCategory;
-import fr.flushfr.crates.utils.ErrorType;
-import fr.flushfr.crates.utils.ItemBuilder;
-import fr.flushfr.crates.utils.Utils;
+import fr.flushfr.crates.utils.*;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+
+import static fr.flushfr.crates.Main.getMainInstance;
 
 public class CratesDataManager {
 
@@ -35,13 +33,14 @@ public class CratesDataManager {
     public void getDataCrates (FileConfiguration f, String file) {
         ItemBuilder keyItem = new ItemBuilder(new ItemStack(Material.getMaterial(ErrorManager.getInstance().getInt(f, "open-key.id", new Error(ErrorCategory.ITEM, file, "open-key", "id", ErrorType.UNDEFINED)))));
         keyItem.data(ErrorManager.getInstance().getInt(f, "open-key.data"));
-        keyItem.name(Utils.color(ErrorManager.getInstance().getString(f,"open-key.name")));
-        keyItem.addLore(Utils.colorList(ErrorManager.getInstance().getStringList(f,"open-key.lore")));
-        List<String> hologramAmbient = Utils.colorList(ErrorManager.getInstance().getStringList(f,"hologram"));
+        keyItem.name(Convert.colorString(ErrorManager.getInstance().getString(f,"open-key.name")));
+        keyItem.addLore(Convert.colorList(ErrorManager.getInstance().getStringList(f,"open-key.lore")));
+        List<String> hologramAmbient = Convert.colorList(ErrorManager.getInstance().getStringList(f,"hologram"));
         List<Reward> rewards = getRewards(f, file);
         int totalProbability = 0;
         for (Reward r:rewards) {totalProbability+=r.getProbability();}
-        World world = Bukkit.getWorld(FileManager.getInstance().getCratesLocationConfig().getString("location."+ file.toLowerCase()+".world"));
+        String worldString = FileManager.getInstance().getCratesLocationConfig().getString("location."+ file.toLowerCase()+".world");
+        World world = Bukkit.getWorld(worldString==null ? "world" : worldString);
         double x = FileManager.getInstance().getCratesLocationConfig().getInt("location."+ file.toLowerCase()+".x");
         double y = FileManager.getInstance().getCratesLocationConfig().getDouble("location."+ file.toLowerCase()+".y");
         double z = FileManager.getInstance().getCratesLocationConfig().getInt("location."+ file.toLowerCase()+".z");
@@ -49,20 +48,20 @@ public class CratesDataManager {
         Location hologramLocation = new Location(world, x+0.5, y, z+0.5);
         boolean isPreviewEnable = f.getBoolean("preview.enable");
         int rowsPreview = ErrorManager.getInstance().getInt(f,"preview.rows", new Error(ErrorCategory.PREVIEW, file, "preview", "rows", ErrorType.UNDEFINED));
-        String inventoryNamePreview = Utils.color(ErrorManager.getInstance().getString(f,"preview.inventory-name", new Error(ErrorCategory.PREVIEW, file, "preview", "inventory-name", ErrorType.UNDEFINED)));
+        String inventoryNamePreview = Convert.colorString(ErrorManager.getInstance().getString(f,"preview.inventory-name", new Error(ErrorCategory.PREVIEW, file, "preview", "inventory-name", ErrorType.UNDEFINED)));
         CratesManager.getInstance().crates.add(new Crates(file, getAnimationList(f, file), keyItem, rewards, isPreviewEnable, rowsPreview, crateLocation, hologramLocation, inventoryNamePreview, hologramAmbient, totalProbability));
     }
 
     public List<Object> getAnimationList (FileConfiguration f, String fileName) {
         List<Object> animationList = new ArrayList<>();
-        Set<String> animationStringList = new HashSet<>();
+        Set<String> animationStringList;
         try {
             animationStringList = f.getConfigurationSection("animation").getKeys(false);
-        } catch (NullPointerException ignored) {}
+        } catch (NullPointerException ignored) {animationStringList = new HashSet<>();}
         for (String s: animationStringList) {
             switch (ErrorManager.getInstance().getString(f,"animation."+s+".type", new Error(ErrorCategory.ANIMATION, fileName,s, "type")).toLowerCase()) {
                 case "firework":
-                    animationList.add(extractFireworkData(getDataFromAnimation("animation."+s, f)));
+                    animationList.add(extractFireworkData(getDataFromAnimation("animation."+s, f),"animation."+s, fileName));
                     break;
                 case "epicsword":
                     animationList.add(extractEpicSwordData(f, "animation."+s, fileName));
@@ -70,11 +69,14 @@ public class CratesDataManager {
                 case "rollanimation":
                     animationList.add(extractRollData(f, "animation."+s, fileName));
                     break;
-                case "message_to_player":
-                    animationList.add(new MessageData(Utils.colorListToArray(ErrorManager.getInstance().getStringList(f, "animation."+s+".message")), null));
+                case "chat_message":
+                    animationList.add(extractMessageData(f, "animation."+s, fileName, false, true, true));
                     break;
-                case "broadcast":
-                    animationList.add(new MessageData(Utils.colorListToArray(ErrorManager.getInstance().getStringList(f, "animation."+s+".message")), true));
+                case "action_bar_message":
+                    animationList.add(extractMessageData(f, "animation."+s, fileName, true, false, false));
+                    break;
+                case "title_message":
+                    animationList.add(extractMessageData(f, "animation."+s, fileName, false, false, true));
                     break;
                 case "playsound":
                     animationList.add(getSoundInformation(f, "animation."+s, fileName, "sound", "volume", "pitch"));
@@ -113,6 +115,51 @@ public class CratesDataManager {
         return new SimpleRotationData(rewardNameHologram);
     }
 
+    public MessageData extractMessageData (FileConfiguration f, String path, String fileName, boolean actionBar, boolean chatMessage, boolean titleMessage) {
+        HashMap<String, String> data = getDataFromAnimation(path, f);
+        boolean everyone = false;
+        String actionBarMessage = "";
+        int stay = 10;
+        int fadeOut = 0;
+        int fadeIn = 0;
+        String title = "";
+        String subtitle = "";
+        String[] message = Convert.colorListToArray(ErrorManager.getInstance().getStringList(f, path+".message"));
+        for (String dataName : data.keySet()) {
+            if (dataName.equals("everyone")) {
+                everyone = Boolean.parseBoolean(data.get(dataName));
+            }
+            if (dataName.equals("stay-time")) {
+                stay = Integer.parseInt(data.get(dataName));
+            }
+            if (dataName.equals("fadein-time")) {
+                fadeIn = Integer.parseInt(data.get(dataName));
+            }
+            if (dataName.equals("fadeout-time")) {
+                fadeOut = Integer.parseInt(data.get(dataName));
+            }
+            if (dataName.equals("title")) {
+                title = data.get(dataName);
+            }
+            if (dataName.equals("subtitle")) {
+                subtitle = data.get(dataName);
+            }
+            if (dataName.equals("action-bar-message")) {
+                subtitle = data.get(dataName);
+            }
+        }
+        if (message.length==0 && !titleMessage) {
+            ErrorManager.getInstance().addError(new Error(ErrorCategory.ANIMATION, fileName, "animation", "message"));
+        }
+        if(actionBar) {
+            return new MessageData(actionBarMessage, everyone);
+        }
+        if (titleMessage) {
+            return new MessageData(everyone, stay, fadeIn, fadeOut, title, subtitle);
+        }
+        return new MessageData(message, everyone);
+    }
+
     public CSGOData extractCSGOAnimation (FileConfiguration f, String path, String fileName) {
         HashMap<String, String> data = getDataFromAnimation(path, f);
         SoundData endSound = getSoundInformation(f, path, fileName, "end-sound", "end-volume", "end-pitch");
@@ -126,7 +173,7 @@ public class CratesDataManager {
         if (inventoryName.equals("")) {
             ErrorManager.getInstance().addError(new Error(ErrorCategory.ANIMATION, fileName, path, "inventory-name", ErrorType.UNDEFINED));
         }
-        return new CSGOData(Utils.color(inventoryName), rollSound, endSound);
+        return new CSGOData(Convert.colorString(inventoryName), rollSound, endSound);
     }
 
     public SoundData getSoundInformation (FileConfiguration f, String path, String fileName, String soundVariableName, String volumeVariableName, String pitchVariableName) {
@@ -204,37 +251,47 @@ public class CratesDataManager {
         return particle;
     }
 
-    public FireworkData extractFireworkData (HashMap<String, String> data) {
+    public FireworkData extractFireworkData (HashMap<String, String> data, String path, String fileName) {
         Color fireworkColor = Color.AQUA;
         Color fadeColor = Color.AQUA;
         int lifeTime = 1;
         int power = 1;
         boolean trail = false;
         boolean flicker = false;
-        for (String f: data.keySet()) {
-            String value = data.get(f);
-            switch (f.toLowerCase()) {
-                case "fireworkcolor":
-                    fireworkColor = Utils.getColor(value);
-                    break;
-                case "fadecolor":
-                    fadeColor = Utils.getColor(value);
-                    break;
-                case "lifetime":
-                    lifeTime = Integer.parseInt(value);
-                    break;
-                case "power":
-                    power = Integer.parseInt(value);
-                    break;
-                case "trail":
-                    trail = Boolean.parseBoolean(value);
-                    break;
-                case "flicker":
-                    flicker = Boolean.parseBoolean(value);
-                    break;
+        FireworkEffect.Type shape = FireworkEffect.Type.STAR;
+        try {
+            for (String f: data.keySet()) {
+                String value = data.get(f);
+                switch (f.toLowerCase()) {
+                    case "fireworkcolor":
+                        fireworkColor = Utils.getColor(value);
+                        break;
+                    case "fadecolor":
+                        fadeColor = Utils.getColor(value);
+                        break;
+                    case "lifetime":
+                        lifeTime = Integer.parseInt(value);
+                        break;
+                    case "power":
+                        power = Integer.parseInt(value);
+                        break;
+                    case "trail":
+                        trail = Boolean.parseBoolean(value);
+                        break;
+                    case "flicker":
+                        flicker = Boolean.parseBoolean(value);
+                        break;
+                    case "shape":
+                        try {
+                            shape = FireworkEffect.Type.valueOf(value);
+                        } catch (Exception ignored) {
+                            ErrorManager.getInstance().addError(new Error(ErrorCategory.ANIMATION, fileName, path, "shape", ErrorType.INCORRECT_FIREWORK_SHAPE));
+                        }
+                        break;
+                }
             }
-        }
-        return new FireworkData(fireworkColor, fadeColor, lifeTime, power, trail, flicker);
+        } catch (NumberFormatException ignored) {}
+        return new FireworkData(fireworkColor, fadeColor, lifeTime, power, trail, flicker, shape);
     }
 
     public List<Reward> getRewards(FileConfiguration f, String crateName) {
@@ -246,23 +303,15 @@ public class CratesDataManager {
 
     public Reward getReward(String rewardName, FileConfiguration f, String crateName) {
         int probability = ErrorManager.getInstance().getInt(f ,"rewards."+rewardName+".chance" , new Error (ErrorCategory.ITEM, crateName,rewardName,"chance"));
-        int id = ErrorManager.getInstance().getInt(f ,"rewards."+rewardName+".display.id" , new Error (ErrorCategory.ITEM,crateName, rewardName,"id"));
-        int amount = ErrorManager.getInstance().getInt(f, "rewards." + rewardName + ".display.amount");
-        ItemBuilder itemPresentation = new ItemBuilder(new ItemStack(Material.getMaterial(id), amount));
-        itemPresentation.data(f.getInt("rewards." + rewardName + ".display.data"));
-        itemPresentation.name(Utils.color(ErrorManager.getInstance().getString(f, "rewards."+rewardName+".display.name")));
-        itemPresentation.addLore(Utils.colorList(ErrorManager.getInstance().getStringList(f, "rewards." + rewardName + ".display.lore")));
+        ItemBuilder itemToGive = ErrorManager.getInstance().getItemFromConfig(f, "rewards."+rewardName, crateName);
+        ItemBuilder itemPresentation = itemToGive.copy();
         HashMap<String, String> replace = new HashMap<>();
         replace.put("%chance%",f.getInt("rewards."+rewardName+".chance")+"");
-        itemPresentation.addLore(Utils.colorListReplace(ErrorManager.getInstance().getStringList(f, "preview-crates.lore-under"), replace));
-        ItemBuilder itemToGive = new ItemBuilder(new ItemStack(Material.getMaterial(id), amount));
-        itemToGive.data(itemPresentation.getData());
-        itemToGive.name(Utils.color(ErrorManager.getInstance().getString(f,"rewards." + rewardName + ".display.name")));
-        itemToGive.addLore(Utils.colorList(ErrorManager.getInstance().getStringList(f, "rewards." + rewardName + ".display.lore")));
+        itemPresentation.addLore(Convert.replaceValues(Convert.listToArray(Convert.colorList(ErrorManager.getInstance().getStringList(getMainInstance().getConfig(), "preview-crates.lore-under"))), replace));
         boolean glowItemPresentation = ErrorManager.getInstance().getBoolean(f, "rewards." + rewardName + ".display.glow");
         itemPresentation.setGlowing(glowItemPresentation);
         boolean giveItemDisplay = ErrorManager.getInstance().getBoolean(f, "rewards." + rewardName + ".reward.give-item-display", new Error(ErrorCategory.ITEM,crateName ,rewardName , "giveItemDisplay"));
         List<String> command = ErrorManager.getInstance().getStringList(f, "rewards." + rewardName + ".reward.commands");
-        return new Reward(probability,command,itemPresentation,itemToGive,glowItemPresentation,giveItemDisplay);
+        return new Reward(probability,command,itemPresentation,itemToGive,giveItemDisplay);
     }
 }

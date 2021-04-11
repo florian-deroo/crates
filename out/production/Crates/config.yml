@@ -1,4 +1,8 @@
+license-key: "effeffe"
 language: "fr_FR"
+permission:
+  admin: "crates.admin"
+  player: "crates.player"
 preview-crates:
   lore-under:
     - "&7Chance: &5%chance%"
@@ -11,14 +15,3 @@ hologram:
       - "&b"
       - "&6"
       - "&e"
-animations:
-  epicsword:
-    sword-item-1: 276
-    sword-item-2: 283
-    particle: "HAPPY_VILLAGER"
-    hologram-position: 2
-    hologram-on-rolling:
-      - "%item%"
-      - "&7Chance: &5%chance%%"
-    end-animation:
-      sound: ""

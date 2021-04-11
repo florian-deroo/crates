@@ -1,4 +1,4 @@
-package fr.flushfr.crates.utils;
+package fr.flushfr.crates.objects;
 
 public enum ErrorType {
     UNDEFINED,
@@ -10,5 +10,8 @@ public enum ErrorType {
     INCORRECT_SOUND,
     INCORRECT_UNDEFINED,
     INCORRECT_PARTICLE,
+    INCORRECT_FIREWORK_SHAPE,
+    AMOUNT_NULL,
+    INCORRECT,
 
 }

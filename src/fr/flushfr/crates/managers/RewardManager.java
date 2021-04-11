@@ -43,7 +43,7 @@ public class RewardManager {
         }
         FileManager.getInstance().getMissedRewardConfig().set(player, listReward);
         FileManager.getInstance().reloadMissedRewardsConfig();
-        // Save config
+        FileManager.getInstance().saveMissedRewardConfig();
     }
 
     public Reward getRandomRewardFromCrate (Crates c) {
@@ -62,7 +62,7 @@ public class RewardManager {
     public void giveKeyToPlayer (String player, Crates crate, int amount) {
         if (Bukkit.getPlayer(player).isOnline()) {
             Player p = Bukkit.getPlayer(player);
-            if (!RewardManager.getInstance().isInvFull(p.getInventory())) {
+            if (RewardManager.getInstance().isInvFull(p.getInventory())) {
                 ItemStack key = crate.getKeyItem().build();
                 key.setAmount(amount);
                 p.getInventory().addItem(key);
@@ -78,7 +78,9 @@ public class RewardManager {
 
     public void giveRewardToPlayer (Reward r, Player p) {
         for (String commands : r.getCommands()) {Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commands.replaceAll("%player%",p.getName()));}
-        giveItemToPlayer(p, r.getItemToGive().build());
+        if (r.isGiveItemDisplay()) {
+            giveItemToPlayer(p, r.getItemToGive().build());
+        }
     }
 
     public void giveMissedRewards (String player) {
@@ -91,11 +93,11 @@ public class RewardManager {
             }
         }
         FileManager.getInstance().reloadMissedRewardsConfig();
-        // Save
+        FileManager.getInstance().saveMissedRewardConfig();
     }
 
     public void giveItemToPlayer (Player p, ItemStack reward) {
-        if (!isInvFull(p.getInventory())) {
+        if (isInvFull(p.getInventory())) {
             p.getInventory().addItem(reward);
         } else {
             Bukkit.getWorld(p.getWorld().getName()).dropItemNaturally(p.getLocation(), reward);
@@ -104,7 +106,7 @@ public class RewardManager {
     }
 
     public boolean isInvFull(Inventory playerInventory) {
-        return !Arrays.asList(playerInventory.getContents()).contains(null);
+        return Arrays.asList(playerInventory.getContents()).contains(null);
     }
 
 

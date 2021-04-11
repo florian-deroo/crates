@@ -1,10 +1,11 @@
 package fr.flushfr.crates.managers;
 
 import fr.flushfr.crates.objects.Crates;
+import fr.flushfr.crates.objects.Data;
 import fr.flushfr.crates.objects.Reward;
 import fr.flushfr.crates.objects.animation.process.EpicSwordAnimation;
 import fr.flushfr.crates.objects.animation.process.RollAnimation;
-import fr.flushfr.crates.utils.Utils;
+import fr.flushfr.crates.utils.Convert;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static fr.flushfr.crates.Main.*;
+import static fr.flushfr.crates.Main.getMainInstance;
 
 public class HologramManager {
 
@@ -99,14 +100,10 @@ public class HologramManager {
     }
 
     public void updateRollArmorstand (RollAnimation rollAnimation, ArmorStand itemHologram, ArmorStand nameHologram) {
-
         int indexInList = rollAnimation.getIndexInList()%rollAnimation.getRewards().size();
         Reward reward = rollAnimation.getRewards().get(indexInList);
         ItemStack item = reward.getItemPresentation().build();
-        String customName = Utils.color(rollAnimation.getHologramOnRolling().replaceAll("%item-name%", item.getItemMeta().getDisplayName()).replaceAll("%chance%", reward.getProbability()+"").replaceAll("%amount%", item.getAmount()+""));
-        if (reward.getItemPresentation().build().getItemMeta().getDisplayName().equals("")) {
-            customName = Utils.color(rollAnimation.getHologramOnRolling().replaceAll("%item-name%", item.getType().name()).replaceAll("%chance%", reward.getProbability()+"").replaceAll("%amount%", item.getAmount()+""));
-        }
+        String customName = Convert.colorString(rollAnimation.getHologramOnRolling().replaceAll("%item-name%",(reward.getItemPresentation().build().hasItemMeta() && reward.getItemPresentation().build().getItemMeta().hasDisplayName()) ? item.getItemMeta().getDisplayName() : item.getType().name()).replaceAll("%chance%", reward.getProbability()+"").replaceAll("%amount%", item.getAmount()+""));
         nameHologram.setCustomName(customName);
         ItemStack itemInHologram = item.clone();
         itemInHologram.setAmount(1);
@@ -118,7 +115,7 @@ public class HologramManager {
     public ArmorStand spawnHologram (Location l, String line, String crateName) {
         ArmorStand as = (ArmorStand) Bukkit.getWorld("world").spawnEntity(l, EntityType.ARMOR_STAND);
         as.setGravity(false);
-        if (!line.equals("")) {
+        if (line!=null && !line.equals("")) {
             if (line.contains("&u")) {
                 hologramColored.put(as,line);
             }
@@ -135,7 +132,7 @@ public class HologramManager {
     }
 
     public void launchHologramMultiColor() {
-        colorList=getMainInstance().getConfig().getStringList("hologram.colored-animation.color-list");
+        colorList= Data.colorListHologram;
         if (!isRunnableMultiColorStarted) {
             isRunnableMultiColorStarted=true;
             new BukkitRunnable() {
@@ -143,11 +140,11 @@ public class HologramManager {
                 public void run() {
                     List<ArmorStand> copy = new ArrayList<>(hologramColored.keySet());
                     for (ArmorStand a: copy) {
-                        a.setCustomName(hologramColored.get(a).replaceAll("&u",Utils.color(colorList.get(i%colorList.size()))));
+                        a.setCustomName(hologramColored.get(a).replaceAll("&u",Convert.colorString(colorList.get(i%colorList.size()))));
                     }
                     i++;
                 }
-            }.runTaskTimer(getMainInstance(),getMainInstance().getConfig().getInt("hologram.colored-animation.refreshColorTime"),getMainInstance().getConfig().getInt("hologram.colored-animation.refreshColorTime"));
+            }.runTaskTimer(getMainInstance(),0,Data.refreshTime);
         }
     }
 }

@@ -1,6 +1,7 @@
 package fr.flushfr.crates.managers;
 
 import fr.flushfr.crates.utils.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -57,7 +58,6 @@ public class FileManager {
     }
 
     public void saveCratesLocationConfig() {
-        reloadCratesLocationConfig();
         try {
             getCratesLocationConfig().save(new File(getMainInstance().getDataFolder(),  pathCratesLocationConfig));
         } catch (IOException ex) {
@@ -83,7 +83,6 @@ public class FileManager {
     }
 
     public void saveLanguageConfig() {
-        reloadLanguageConfig();
         try {
             getCratesLocationConfig().save(new File(getMainInstance().getDataFolder(),  pathLanguageConfig));
         } catch (IOException ex) {
@@ -115,7 +114,6 @@ public class FileManager {
     }
 
     public void saveMissedRewardConfig() {
-        reloadLanguageConfig();
         try {
             getCratesLocationConfig().save(new File(getMainInstance().getDataFolder(),  pathMissedRewardsConfig));
         } catch (IOException ex) {
@@ -138,7 +136,6 @@ public class FileManager {
             saveCratesRessources();
         }
     }
-
     private void saveCratesRessources () {
         getMainInstance().saveResource("crates/EpicCrate.yml", false);
         getMainInstance().saveResource("crates/MasterCrate.yml", false);
@@ -148,16 +145,6 @@ public class FileManager {
         for (String file: cratesFilesName) {
             File customConfigFile = new File(getMainInstance().getDataFolder(), "crates/"+file);
             FileConfiguration customConfigFileConfig = YamlConfiguration.loadConfiguration(customConfigFile);
-            Reader defConfigStream = null;
-            try {
-                defConfigStream = new InputStreamReader(getMainInstance().getResource("crates/"+file), "UTF8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            if (defConfigStream != null) {
-                YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-                customConfigFileConfig.setDefaults(defConfig);
-            }
             cratesFiles.put(customConfigFileConfig,file.replaceAll(".yml",""));
         }
     }

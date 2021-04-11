@@ -5,7 +5,9 @@ import fr.flushfr.crates.objects.Crates;
 import fr.flushfr.crates.objects.Reward;
 import fr.flushfr.crates.objects.animation.data.*;
 import fr.flushfr.crates.objects.animation.process.AnimationStatus;
-import fr.flushfr.crates.utils.Utils;
+import fr.flushfr.crates.utils.ActionBar;
+import fr.flushfr.crates.utils.Convert;
+import fr.flushfr.crates.utils.TitleBar;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -30,6 +32,7 @@ public class CratesManager {
 
     public List<Crates> crates = new ArrayList<>();
     public List<String> cratesName = new ArrayList<>();
+    public List<String> protectedInventory = new ArrayList<>();
     public HashMap<Location, String> protectedLocation = new HashMap<>();
 
     public void startAnimationList (Crates c, Player p) {
@@ -40,6 +43,7 @@ public class CratesManager {
         Reward reward = RewardManager.getInstance().getRandomRewardFromCrate(c);
         if (animationStatus.isEmpty()) {
             RewardManager.getInstance().giveRewardToPlayer(RewardManager.getInstance().getRandomRewardFromCrate(c), p);
+            HologramManager.getInstance().hideOrRevealHologram(HologramManager.getInstance().crateHologram.get(c.getCrateName()), true);
             return;
         }
         new BukkitRunnable() {
@@ -58,10 +62,21 @@ public class CratesManager {
                         currentAnimationStatus.setEnded(true);
                     } else if (animation instanceof MessageData) {
                         MessageData msg = (MessageData) animation;
-                        if (msg.isEveryone()) {
-                            for (String toSend : Utils.replace(msg.getMessage(), "%player%", ChatColor.stripColor(p.getDisplayName()), "%crate%", c.getCrateName(), "%amount%", reward.getItemToGive().build().getAmount()+"", "%chance%", reward.getProbability()+"", "%reward%", reward.getItemToGive().getName().equals("")?reward.getItemToGive().build().getType()+"":reward.getItemToGive().getName())) {Bukkit.broadcastMessage(toSend);}
-                        } else {
-                            p.sendMessage(Utils.replace(msg.getMessage(), "%player%",  ChatColor.stripColor(p.getDisplayName()), "%crate%", c.getCrateName(), "%amount%", reward.getItemToGive().build().getAmount()+"", "%chance%", reward.getProbability()+"", "%reward%",  reward.getItemToGive().getName().equals("")?reward.getItemToGive().build().getType()+"":reward.getItemToGive().getName()));
+                        String[] msgToSend = Convert.replaceValues(msg.getMessage().length==0 ? new String[]{} : msg.getMessage(), "%player%",  ChatColor.stripColor(p.getDisplayName()), "%crate%", c.getCrateName(), "%amount%", reward.getItemToGive().build().getAmount()+"", "%chance%", reward.getProbability()+"", "%reward%",  reward.getItemToGive().getName().equals("")?reward.getItemToGive().build().getType()+"":reward.getItemToGive().getName());
+                        if (msg.isChatMessage()) {
+                            if (msg.isEveryone()) {
+                                for (String s:msgToSend) {
+                                    Bukkit.broadcastMessage(s);
+                                }
+                            } else {
+                                p.sendMessage(msgToSend);
+                            }
+                        } else if (msg.isTitleMessage()) {
+                            String[] title = Convert.replaceValues(new String[]{msg.getTitle()}, "%player%",  ChatColor.stripColor(p.getDisplayName()), "%crate%", c.getCrateName(), "%amount%", reward.getItemToGive().build().getAmount()+"", "%chance%", reward.getProbability()+"", "%reward%",  reward.getItemToGive().getName().equals("")?reward.getItemToGive().build().getType()+"":reward.getItemToGive().getName());
+                            String[] subtitle = Convert.replaceValues(new String[]{msg.getSubtitle()}, "%player%",  ChatColor.stripColor(p.getDisplayName()), "%crate%", c.getCrateName(), "%amount%", reward.getItemToGive().build().getAmount()+"", "%chance%", reward.getProbability()+"", "%reward%",  reward.getItemToGive().getName().equals("")?reward.getItemToGive().build().getType()+"":reward.getItemToGive().getName());
+                            TitleBar.sendFullTitle(p, msg.getFadeIn(), msg.getStay(), msg.getFadeOut(), title[0], subtitle[0]);
+                        } else if (msg.isActionBar()) {
+                            ActionBar.sendActionBarMessage(p, msg.getActionBarMessage());
                         }
                         currentAnimationStatus.setEnded(true);
                     } else if (animation instanceof SoundData) {
@@ -103,11 +118,6 @@ public class CratesManager {
         FileManager.getInstance().getCratesLocationConfig().set("location."+crateName+".z",loc.getZ());
         FileManager.getInstance().saveCratesLocationConfig();
         FileManager.getInstance().reloadCratesLocationConfig();
-        for (Crates c : crates) {
-            if (crateName.equals(c.getCrateName())) {
-                c.setCrateLocation(loc);
-            }
-        }
         getMainInstance().reload();
     }
 
@@ -115,19 +125,20 @@ public class CratesManager {
         FileManager.getInstance().getCratesLocationConfig().set("location."+crateName, "");
         FileManager.getInstance().saveCratesLocationConfig();
         FileManager.getInstance().reloadCratesLocationConfig();
-        for (Crates c : crates) {
-            if (crateName.equals(c.getCrateName())) {
-                c.setCrateLocation(null);
-            }
-        }
         getMainInstance().reload();
     }
 
-    public void initProtectedLocation () {
+    public void initProtected () {
         protectedLocation.clear();
         cratesName.clear();
         for (Crates c: CratesManager.getInstance().crates) {
-            cratesName.add(c.getInventoryNamePreview());
+            cratesName.add(c.getCrateName());
+            protectedInventory.add(c.getInventoryNamePreview());
+            for (Object o : c.getAnimationList()) {
+                if (o instanceof CSGOData) {
+                    protectedInventory.add(((CSGOData) o).getInventoryName());
+                }
+            }
             protectedLocation.put(c.getCrateLocation(), c.getCrateName());
         }
     }

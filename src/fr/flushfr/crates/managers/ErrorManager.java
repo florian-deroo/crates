@@ -2,11 +2,14 @@ package fr.flushfr.crates.managers;
 
 import fr.flushfr.crates.objects.Error;
 import fr.flushfr.crates.objects.animation.data.SoundData;
-import fr.flushfr.crates.utils.ErrorCategory;
-import fr.flushfr.crates.utils.ErrorType;
+import fr.flushfr.crates.objects.ErrorCategory;
+import fr.flushfr.crates.objects.ErrorType;
+import fr.flushfr.crates.utils.Convert;
+import fr.flushfr.crates.utils.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -43,6 +46,13 @@ public class ErrorManager {
         if (e.getErrorCategory() == ErrorCategory.MATERIAL_INVALID) {
             getMainInstance().errorList.add("File: "+e.getFileName() +", "+e.getVariableName()+" in '"+e.getErrorSectionName()+"' "+e.getErrorType());
         }
+        if (e.getErrorCategory() == ErrorCategory.CONFIG) {
+            if (!e.getErrorSectionName().isEmpty()) {
+                getMainInstance().errorList.add("File: "+e.getFileName() +", "+e.getVariableName()+" in '"+e.getErrorSectionName()+"' "+e.getErrorType());
+            } else {
+                getMainInstance().errorList.add("File: "+e.getFileName() +", "+e.getVariableName()+" "+e.getErrorType());
+            }
+        }
     }
 
     public int getInt(FileConfiguration f, String path) {
@@ -53,11 +63,11 @@ public class ErrorManager {
         if (!f.contains(path)) {
             e.setErrorType(ErrorType.UNDEFINED);
             addError(e);
-            return 1;
+            return 0;
         } else if (!(f.get(path) instanceof Integer)) {
             e.setErrorType(ErrorType.INCORRECT_INTEGER);
             addError(e);
-            return 1;
+            return 0;
         }
         return f.getInt(path);
     }
@@ -118,14 +128,24 @@ public class ErrorManager {
         return f.getBoolean(path);
     }
 
-    public ItemStack getItemFromConfig (String material,  Error e) {
-        Material m = Material.getMaterial(material);
-        if (m == null) {
-            e.setErrorType(ErrorType.INCORRECT_MATERIAL_ID);
-            addError(e);
-            return new ItemStack(Material.STONE);
+    public ItemBuilder getItemFromConfig (FileConfiguration f, String path, String fileName) {
+        int id = ErrorManager.getInstance().getInt(f ,path+".display.id");
+        int amount = ErrorManager.getInstance().getInt(f, path + ".display.amount");
+        if (amount == 0) {
+            ErrorManager.getInstance().addError(new Error(ErrorCategory.ITEM, fileName, path, "amount", ErrorType.AMOUNT_NULL));
+            amount = 1;
         }
-        return new ItemStack(m,1);
+        Material m = Material.getMaterial(id);
+        if (m == null) {
+            ErrorManager.getInstance().addError(new Error(ErrorCategory.ITEM, fileName, path, "id", ErrorType.INCORRECT_MATERIAL_ID));
+            m = Material.STONE;
+        }
+        ItemBuilder item = new ItemBuilder(new ItemStack(m, amount));
+        item.data(f.getInt(path + ".display.data"));
+        item.name(Convert.colorString(ErrorManager.getInstance().getString(f, path+".display.name")));
+        item.addLore(Convert.colorList(ErrorManager.getInstance().getStringList(f, path + ".display.lore")));
+        item.enchant( f, path, fileName);
+        return item;
     }
 
     public SoundData getSound(Error error, String soundName, float volume, float pitch) {

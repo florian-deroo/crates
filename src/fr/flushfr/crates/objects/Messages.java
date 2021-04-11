@@ -13,7 +13,6 @@ public class Messages {
     public static String[] errorArgGiveCommand;
     public static String[] addMissedKeyDueToFullInventory;
     public static String[] dropItemInventoryFull;
-    public static String[] notNumber;
     public static String[] successfullyGive;
     public static String[] successfullyGiveAll;
     public static String[] noCrateMatch;

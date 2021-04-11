@@ -11,6 +11,7 @@ import fr.flushfr.crates.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -69,7 +70,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void inventoryClick (InventoryClickEvent e) {
         if (getMainInstance().isDisable) {return;}
-        if(e.getSlot()!=-999 && CratesManager.getInstance().crates!= null && CratesManager.getInstance().cratesName.contains(e.getClickedInventory().getName()) && !getMainInstance().isDisable) {
+        if(e.getSlot()!=-999 && CratesManager.getInstance().crates!= null && CratesManager.getInstance().protectedInventory.contains(e.getClickedInventory().getName()) && !getMainInstance().isDisable) {
             e.setCancelled(true);
         }
     }
@@ -87,7 +88,7 @@ public class PlayerListener implements Listener {
     public boolean playerHoldKeyAndRemove (Player p, Crates crates) {
         ItemStack itemInHand =  p.getInventory().getItemInHand();
         ItemStack item = crates.getKeyItem().build();
-        if (Utils.isSimilar(itemInHand, item, true)) {
+        if (Utils.isItemSimilar(itemInHand, item, true)) {
             if(p.getInventory().getItemInHand().getAmount()==1) {
                 p.getInventory().setItemInHand(new ItemStack(Material.AIR));
             } else {

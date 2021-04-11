@@ -6,6 +6,7 @@ import fr.flushfr.crates.objects.Crates;
 import fr.flushfr.crates.objects.Reward;
 import fr.flushfr.crates.objects.animation.data.*;
 import fr.flushfr.crates.objects.animation.process.*;
+import fr.flushfr.crates.utils.Convert;
 import fr.flushfr.crates.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftFirework;
@@ -66,7 +67,7 @@ public class Animations {
                 } else if (csgoAnimation.getA()>=100 && csgoAnimation.getA()<=140 && csgoAnimation.getA()%20==0) {
                     csgoAnimation.setB(updateInventory(c, csgoInv, csgoAnimation.getB(), p.getLocation(), csgoData.getSoundOnRolling()));
                 } else if (csgoAnimation.getA()>140 && csgoAnimation.getA()%20==0) {
-                    if (Utils.isSimilar(reward.getItemPresentation().build(), csgoInv.getItem(13), false)) {
+                    if (Utils.isItemSimilar(reward.getItemPresentation().build(), csgoInv.getItem(13), false)) {
                         p.getLocation().getWorld().playSound(p.getLocation(), csgoData.getSoundEnd().getSound(), csgoData.getSoundEnd().getVolume(),csgoData.getSoundEnd().getPitch());
                         p.closeInventory();
                         animationStatus.setEnded(true);
@@ -109,7 +110,7 @@ public class Animations {
                     }
 
                 } else if (s.getIterator()==73) {
-                    s.setArmorStandRewardName(HologramManager.getInstance().spawnHologram(l, Utils.color(simpleRotationData.getRewardNameHologram().replaceAll("%item-name%", reward.getItemPresentation().getName().equals("") ? reward.getItemPresentation().build().getType().name() : reward.getItemPresentation().getName()).replaceAll("%amount%", reward.getItemPresentation().build().getAmount()+"").replaceAll("%chance%", reward.getProbability()+"")), "toRemove"));
+                    s.setArmorStandRewardName(HologramManager.getInstance().spawnHologram(l, Convert.colorString(simpleRotationData.getRewardNameHologram().replaceAll("%item-name%", reward.getItemPresentation().getName().equals("") ? reward.getItemPresentation().build().getType().name() : reward.getItemPresentation().getName()).replaceAll("%amount%", reward.getItemPresentation().build().getAmount()+"").replaceAll("%chance%", reward.getProbability()+"")), "toRemove"));
                     HologramManager.getInstance().addHologramToRemove(s.getArmorStandRewardName());
                     for (int i = 0; i<10;i++) {
                         s.getLocation().getWorld().playEffect(s.getLocation(), Effect.FIREWORKS_SPARK, 10, 10);
@@ -176,7 +177,7 @@ public class Animations {
     public void launchFirework(Location l, FireworkData fireworkData){
         Firework fw = l.getWorld().spawn(l,Firework.class);
         FireworkMeta meta = fw.getFireworkMeta();
-        meta.addEffect(FireworkEffect.builder().flicker(fireworkData.isFlicker()).with(FireworkEffect.Type.STAR).trail(fireworkData.isTrail()).withFade(fireworkData.getFadeColor()).withColor(fireworkData.getFireworkColor()).build());
+        meta.addEffect(FireworkEffect.builder().flicker(fireworkData.isFlicker()).with(fireworkData.getType()).trail(fireworkData.isTrail()).withFade(fireworkData.getFadeColor()).withColor(fireworkData.getFireworkColor()).build());
         meta.setPower(fireworkData.getPower());
         fw.setFireworkMeta(meta);
         ((CraftFirework)fw).getHandle().expectedLifespan = fireworkData.getLifeTime();

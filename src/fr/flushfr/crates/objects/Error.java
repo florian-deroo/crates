@@ -1,8 +1,5 @@
 package fr.flushfr.crates.objects;
 
-import fr.flushfr.crates.utils.ErrorCategory;
-import fr.flushfr.crates.utils.ErrorType;
-
 public class Error {
 
     private String fileName;
@@ -10,6 +7,10 @@ public class Error {
     private ErrorCategory errorCategory;
     private String errorSectionName;
     private ErrorType errorType;
+
+    public Error(ErrorCategory errorCategory) {
+        this.errorCategory = errorCategory;
+    }
 
 
     public Error(ErrorCategory errorCategory, String fileName, String errorSectionName, String errorVariableName) {

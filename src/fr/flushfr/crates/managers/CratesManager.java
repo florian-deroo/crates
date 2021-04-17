@@ -60,24 +60,14 @@ public class CratesManager {
                     } else if (animation instanceof FireworkData) {
                         Animations.getInstance().launchFirework(c.getCrateLocation(), (FireworkData) animation);
                         currentAnimationStatus.setEnded(true);
-                    } else if (animation instanceof MessageData) {
-                        MessageData msg = (MessageData) animation;
-                        String[] msgToSend = Convert.replaceValues(msg.getMessage().length==0 ? new String[]{} : msg.getMessage(), "%player%",  ChatColor.stripColor(p.getDisplayName()), "%crate%", c.getCrateName(), "%amount%", reward.getItemToGive().build().getAmount()+"", "%chance%", reward.getProbability()+"", "%reward%",  reward.getItemToGive().getName().equals("")?reward.getItemToGive().build().getType()+"":reward.getItemToGive().getName());
-                        if (msg.isChatMessage()) {
-                            if (msg.isEveryone()) {
-                                for (String s:msgToSend) {
-                                    Bukkit.broadcastMessage(s);
-                                }
-                            } else {
-                                p.sendMessage(msgToSend);
-                            }
-                        } else if (msg.isTitleMessage()) {
-                            String[] title = Convert.replaceValues(new String[]{msg.getTitle()}, "%player%",  ChatColor.stripColor(p.getDisplayName()), "%crate%", c.getCrateName(), "%amount%", reward.getItemToGive().build().getAmount()+"", "%chance%", reward.getProbability()+"", "%reward%",  reward.getItemToGive().getName().equals("")?reward.getItemToGive().build().getType()+"":reward.getItemToGive().getName());
-                            String[] subtitle = Convert.replaceValues(new String[]{msg.getSubtitle()}, "%player%",  ChatColor.stripColor(p.getDisplayName()), "%crate%", c.getCrateName(), "%amount%", reward.getItemToGive().build().getAmount()+"", "%chance%", reward.getProbability()+"", "%reward%",  reward.getItemToGive().getName().equals("")?reward.getItemToGive().build().getType()+"":reward.getItemToGive().getName());
-                            TitleBar.sendFullTitle(p, msg.getFadeIn(), msg.getStay(), msg.getFadeOut(), title[0], subtitle[0]);
-                        } else if (msg.isActionBar()) {
-                            ActionBar.sendActionBarMessage(p, msg.getActionBarMessage());
-                        }
+                    } else if (animation instanceof ChatMessage) {
+                        Animations.getInstance().sendChatMessage(c, reward, (ChatMessage) animation, p);
+                        currentAnimationStatus.setEnded(true);
+                    } else if (animation instanceof TitleMessage) {
+                        Animations.getInstance().sendTitleMessage(c, reward, (TitleMessage) animation, p);
+                        currentAnimationStatus.setEnded(true);
+                    } else if (animation instanceof ActionBarMessage) {
+                        Animations.getInstance().sendActionBarMessage(c, reward, (ActionBarMessage) animation, p);
                         currentAnimationStatus.setEnded(true);
                     } else if (animation instanceof SoundData) {
                         SoundData soundData = (SoundData) animation;

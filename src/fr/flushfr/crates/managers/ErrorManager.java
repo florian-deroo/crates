@@ -1,15 +1,13 @@
 package fr.flushfr.crates.managers;
 
-import fr.flushfr.crates.objects.Error;
+import fr.flushfr.crates.objects.error.Error;
 import fr.flushfr.crates.objects.animation.data.SoundData;
-import fr.flushfr.crates.objects.ErrorCategory;
-import fr.flushfr.crates.objects.ErrorType;
+import fr.flushfr.crates.objects.error.*;
 import fr.flushfr.crates.utils.Convert;
 import fr.flushfr.crates.utils.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -57,6 +55,17 @@ public class ErrorManager {
 
     public int getInt(FileConfiguration f, String path) {
         return getInt(f, path,  new Error());
+    }
+
+    public int parseInt(String toParse, Error e) {
+        int i = 0;
+        try {
+            i = Integer.parseInt(toParse);
+        } catch (NumberFormatException exception) {
+            e.setErrorType(ErrorType.INCORRECT_INTEGER);
+            addError(e);
+        }
+        return i;
     }
 
     public int getInt(FileConfiguration f, String path, Error e) {

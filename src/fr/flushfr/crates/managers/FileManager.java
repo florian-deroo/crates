@@ -1,7 +1,6 @@
 package fr.flushfr.crates.managers;
 
 import fr.flushfr.crates.utils.Logger;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 

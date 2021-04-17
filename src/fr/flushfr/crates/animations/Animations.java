@@ -6,7 +6,9 @@ import fr.flushfr.crates.objects.Crates;
 import fr.flushfr.crates.objects.Reward;
 import fr.flushfr.crates.objects.animation.data.*;
 import fr.flushfr.crates.objects.animation.process.*;
+import fr.flushfr.crates.utils.ActionBar;
 import fr.flushfr.crates.utils.Convert;
+import fr.flushfr.crates.utils.TitleBar;
 import fr.flushfr.crates.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftFirework;
@@ -221,4 +223,40 @@ public class Animations {
             }
         }.runTaskTimer(getMainInstance(), 1L, 1L);
     }
+
+
+    public void sendTitleMessage(Crates c,Reward reward, TitleMessage msg, Player p) {
+        String title = Convert.replaceValues(msg.getTitle(), "%player%",  ChatColor.stripColor(p.getDisplayName()), "%crate%", c.getCrateName(), "%amount%", reward.getItemToGive().build().getAmount()+"", "%chance%", reward.getProbability()+"", "%reward%",  reward.getItemToGive().getName().equals("")?reward.getItemToGive().build().getType()+"":reward.getItemToGive().getName());
+        String subtitle = Convert.replaceValues(msg.getSubtitle(), "%player%",  ChatColor.stripColor(p.getDisplayName()), "%crate%", c.getCrateName(), "%amount%", reward.getItemToGive().build().getAmount()+"", "%chance%", reward.getProbability()+"", "%reward%",  reward.getItemToGive().getName().equals("")?reward.getItemToGive().build().getType()+"":reward.getItemToGive().getName());
+        if (msg.isEveryone()) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                TitleBar.sendFullTitle(player, msg.getFadeIn(), msg.getStay(), msg.getFadeOut(), title, subtitle);
+            }
+        } else {
+            TitleBar.sendFullTitle(p, msg.getFadeIn(), msg.getStay(), msg.getFadeOut(), title, subtitle);
+        }
+    }
+
+    public void sendChatMessage(Crates c,Reward reward, ChatMessage msg, Player p) {
+        String[] msgToSend = Convert.replaceValues(msg.getMessage().length==0 ? new String[]{} : msg.getMessage(), "%player%",  ChatColor.stripColor(p.getDisplayName()), "%crate%", c.getCrateName(), "%amount%", reward.getItemToGive().build().getAmount()+"", "%chance%", reward.getProbability()+"", "%reward%",  reward.getItemToGive().getName().equals("")?reward.getItemToGive().build().getType()+"":reward.getItemToGive().getName());
+        if (msg.isEveryone()) {
+            for (String s:msgToSend) {
+                Bukkit.broadcastMessage(s);
+            }
+        } else {
+            p.sendMessage(msgToSend);
+        }
+    }
+
+    public void sendActionBarMessage(Crates c,Reward reward, ActionBarMessage msg, Player p) {
+        String msgToSend = Convert.replaceValues(msg.getMessage(), "%player%",  ChatColor.stripColor(p.getDisplayName()), "%crate%", c.getCrateName(), "%amount%", reward.getItemToGive().build().getAmount()+"", "%chance%", reward.getProbability()+"", "%reward%",  reward.getItemToGive().getName().equals("")?reward.getItemToGive().build().getType()+"":reward.getItemToGive().getName());
+        if (msg.isEveryone()) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                ActionBar.sendActionBarMessage(player, msgToSend);
+            }
+        } else {
+            ActionBar.sendActionBarMessage(p, msgToSend);
+        }
+    }
+
 }

@@ -13,11 +13,8 @@ import fr.flushfr.license.DataLicense;
 import fr.flushfr.license.License;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -97,7 +94,12 @@ public class Main extends JavaPlugin {
         initInstance();
         if (!licenseAlreadyChecked) {
             licenseAlreadyChecked= true;
+            Logger.getInstance().log(Level.INFO, "Checking your license key, please wait.");
             dataLicense = License.getLicenseResponse(getConfig().getString("license-key"));
+            while (dataLicense==null) { // RETRY TO CONNECT
+                Logger.getInstance().log(Level.INFO, "Connection failed, trying to reconnect.");
+                dataLicense = License.getLicenseResponse(getConfig().getString("license-key"));
+            }
         }
 
         FileManager.getInstance().saveDefaultCratesFiles();
@@ -135,7 +137,7 @@ public class Main extends JavaPlugin {
                 disable();
             }
         } else {
-            errorList.add("Error while loading please contact me or use /cr reload.");
+            errorList.add("Error while loading please contact me or use /reload.");
             disable();
         }
         sendInformationConsole();

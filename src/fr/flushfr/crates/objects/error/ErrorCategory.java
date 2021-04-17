@@ -1,4 +1,4 @@
-package fr.flushfr.crates.objects;
+package fr.flushfr.crates.objects.error;
 
 public enum ErrorCategory {
     ITEM,

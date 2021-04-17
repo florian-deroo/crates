@@ -40,6 +40,10 @@ public class Convert {
         return array;
     }
 
+    public static String replaceValues (String args, String value1, String toReplace1,  String value2, String toReplace2, String value3, String toReplace3, String value4, String toReplace4,  String value5, String toReplace5) {
+        return replaceValues(new String[]{args}, value1, toReplace1, value2, toReplace2, value3, toReplace3, value4, toReplace4, value5, toReplace5)[0];
+    }
+
     public static String[] replaceValues (String[] args, HashMap<String, String> toReplace) {
         List<String> replacedList = new ArrayList<>();
         String replaced;

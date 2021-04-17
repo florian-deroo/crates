@@ -1,7 +1,8 @@
 package fr.flushfr.crates.managers;
 
 import fr.flushfr.crates.objects.*;
-import fr.flushfr.crates.objects.Error;
+import fr.flushfr.crates.objects.error.*;
+import fr.flushfr.crates.objects.error.Error;
 import fr.flushfr.crates.objects.animation.data.*;
 import fr.flushfr.crates.utils.*;
 import org.bukkit.*;
@@ -15,11 +16,9 @@ import static fr.flushfr.crates.Main.getMainInstance;
 public class CratesDataManager {
 
     private static CratesDataManager instance;
-
     public CratesDataManager () {
         instance = this;
     }
-
     public static CratesDataManager getInstance() {
         return instance;
     }
@@ -70,13 +69,13 @@ public class CratesDataManager {
                     animationList.add(extractRollData(f, "animation."+s, fileName));
                     break;
                 case "chat_message":
-                    animationList.add(extractMessageData(f, "animation."+s, fileName, false, true, true));
+                    animationList.add(extractChatMessageData(f, "animation."+s, fileName));
                     break;
                 case "action_bar_message":
-                    animationList.add(extractMessageData(f, "animation."+s, fileName, true, false, false));
+                    animationList.add(extractActionBarData(f, "animation."+s, fileName));
                     break;
                 case "title_message":
-                    animationList.add(extractMessageData(f, "animation."+s, fileName, false, false, true));
+                    animationList.add(extractTitleData(f, "animation."+s, fileName));
                     break;
                 case "playsound":
                     animationList.add(getSoundInformation(f, "animation."+s, fileName, "sound", "volume", "pitch"));
@@ -115,28 +114,27 @@ public class CratesDataManager {
         return new SimpleRotationData(rewardNameHologram);
     }
 
-    public MessageData extractMessageData (FileConfiguration f, String path, String fileName, boolean actionBar, boolean chatMessage, boolean titleMessage) {
+
+    public TitleMessage extractTitleData (FileConfiguration f, String path, String fileName) {
         HashMap<String, String> data = getDataFromAnimation(path, f);
         boolean everyone = false;
-        String actionBarMessage = "";
         int stay = 10;
         int fadeOut = 0;
         int fadeIn = 0;
         String title = "";
         String subtitle = "";
-        String[] message = Convert.colorListToArray(ErrorManager.getInstance().getStringList(f, path+".message"));
         for (String dataName : data.keySet()) {
             if (dataName.equals("everyone")) {
                 everyone = Boolean.parseBoolean(data.get(dataName));
             }
             if (dataName.equals("stay-time")) {
-                stay = Integer.parseInt(data.get(dataName));
+                stay = ErrorManager.getInstance().parseInt(data.get(dataName), new Error(ErrorCategory.ANIMATION, fileName, path, "stay-time"));
             }
             if (dataName.equals("fadein-time")) {
-                fadeIn = Integer.parseInt(data.get(dataName));
+                fadeIn = ErrorManager.getInstance().parseInt(data.get(dataName), new Error(ErrorCategory.ANIMATION, fileName, path, "fadein-time"));
             }
             if (dataName.equals("fadeout-time")) {
-                fadeOut = Integer.parseInt(data.get(dataName));
+                fadeOut = ErrorManager.getInstance().parseInt(data.get(dataName), new Error(ErrorCategory.ANIMATION, fileName, path, "fadeout-time"));
             }
             if (dataName.equals("title")) {
                 title = data.get(dataName);
@@ -144,20 +142,38 @@ public class CratesDataManager {
             if (dataName.equals("subtitle")) {
                 subtitle = data.get(dataName);
             }
-            if (dataName.equals("action-bar-message")) {
-                subtitle = data.get(dataName);
+        }
+        return new TitleMessage(title, subtitle, stay, fadeIn, fadeOut, everyone);
+    }
+
+    public ChatMessage extractChatMessageData (FileConfiguration f, String path, String fileName) {
+        HashMap<String, String> data = getDataFromAnimation(path, f);
+        boolean everyone = false;
+        String[] message = new String[]{};
+        for (String dataName : data.keySet()) {
+            if (dataName.equals("everyone")) {
+                everyone = Boolean.parseBoolean(data.get(dataName));
+            }
+            if (dataName.equals("message")) {
+                message = Convert.colorListToArray(ErrorManager.getInstance().getStringList(f, path+".message", new Error(ErrorCategory.ANIMATION, fileName, path, "message")));
             }
         }
-        if (message.length==0 && !titleMessage) {
-            ErrorManager.getInstance().addError(new Error(ErrorCategory.ANIMATION, fileName, "animation", "message"));
+        return new ChatMessage(message, everyone);
+    }
+
+    public ActionBarMessage extractActionBarData (FileConfiguration f, String path, String fileName) {
+        HashMap<String, String> data = getDataFromAnimation(path, f);
+        boolean everyone = false;
+        String actionBarMessage = "";
+        for (String dataName : data.keySet()) {
+            if (dataName.equals("everyone")) {
+                everyone = Boolean.parseBoolean(data.get(dataName));
+            }
+            if (dataName.equals("message")) {
+                actionBarMessage = Convert.colorString(ErrorManager.getInstance().getString(f, path+".message", new Error(ErrorCategory.ANIMATION, fileName, path, "message")));
+            }
         }
-        if(actionBar) {
-            return new MessageData(actionBarMessage, everyone);
-        }
-        if (titleMessage) {
-            return new MessageData(everyone, stay, fadeIn, fadeOut, title, subtitle);
-        }
-        return new MessageData(message, everyone);
+        return new ActionBarMessage(actionBarMessage, everyone);
     }
 
     public CSGOData extractCSGOAnimation (FileConfiguration f, String path, String fileName) {

@@ -1,9 +1,8 @@
 package fr.flushfr.crates.utils;
 
 import fr.flushfr.crates.managers.ErrorManager;
-import fr.flushfr.crates.objects.Error;
-import fr.flushfr.crates.objects.ErrorCategory;
-import fr.flushfr.crates.objects.ErrorType;
+import fr.flushfr.crates.objects.error.Error;
+import fr.flushfr.crates.objects.error.*;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;

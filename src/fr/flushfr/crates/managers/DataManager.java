@@ -1,10 +1,10 @@
 package fr.flushfr.crates.managers;
 
 import fr.flushfr.crates.objects.Data;
-import fr.flushfr.crates.objects.Error;
+import fr.flushfr.crates.objects.error.Error;
 import fr.flushfr.crates.objects.Messages;
 import fr.flushfr.crates.utils.Convert;
-import fr.flushfr.crates.objects.ErrorCategory;
+import fr.flushfr.crates.objects.error.*;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import static fr.flushfr.crates.Main.getMainInstance;

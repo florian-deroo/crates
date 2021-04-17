@@ -1,10 +1,6 @@
 package fr.flushfr.license;
 
 import com.google.gson.Gson;
-import fr.flushfr.crates.managers.ErrorManager;
-import fr.flushfr.crates.objects.Error;
-import fr.flushfr.crates.objects.ErrorCategory;
-import org.bukkit.Bukkit;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,9 +19,8 @@ public class License {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(true);
             connection.setRequestMethod("GET");
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
-
+            connection.setConnectTimeout(1000);
+            connection.setReadTimeout(1000);
             try(BufferedReader br = new BufferedReader(
                     new InputStreamReader(connection.getInputStream(), "utf-8"))) {
                 StringBuilder response = new StringBuilder();

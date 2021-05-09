@@ -1,4 +1,4 @@
-package fr.flushfr.license;
+package fr.flushfr.crates.objects;
 
 import com.google.gson.Gson;
 
@@ -15,6 +15,7 @@ public class License {
 
     public static DataLicense getLicenseResponse (String license) {
         try {
+
             URL url = new URL("https://flush-license.herokuapp.com/api/manager.php?type=read&license="+license+"&version="+getMainInstance().getDescription().getVersion()+"&plugin=crate&ip="+ InetAddress.getLocalHost().getHostAddress());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(true);
@@ -28,8 +29,12 @@ public class License {
                 while ((responseLine = br.readLine()) != null) {
                     response.append(responseLine.trim());
                 }
-                Gson gson = new Gson();
-                return gson.fromJson(response.toString(), DataLicense.class);
+                responseLine = response.toString();
+                return new DataLicense()
+                        .setIp_authorized(responseLine.contains("\"ip_authorized\":true"))
+                        .setIp_limit_reached(responseLine.contains("\"ip_limit_reached\":true"))
+                        .setLicense_valid(responseLine.contains("\"license_valid\":true"))
+                        .setUp_to_date(responseLine.contains("\"up_to_date\":true"));
             }
         } catch (IOException e) {
             return null;

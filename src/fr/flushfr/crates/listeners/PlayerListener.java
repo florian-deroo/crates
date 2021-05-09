@@ -11,7 +11,6 @@ import fr.flushfr.crates.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -51,6 +50,12 @@ public class PlayerListener implements Listener {
         for (Crates c: CratesManager.getInstance().crates) {
             if(e.getClickedBlock().getLocation().getX()==c.getCrateLocation().getX() && e.getClickedBlock().getLocation().getY()==c.getCrateLocation().getY() && e.getClickedBlock().getLocation().getZ()==c.getCrateLocation().getZ()) {
                 if (e.getAction()== Action.RIGHT_CLICK_BLOCK) {
+                    for (Crates crates: CratesManager.getInstance().animationRunning.keySet()) {
+                        if (crates == c && CratesManager.getInstance().animationRunning.get(crates)) {
+                            e.getPlayer().sendMessage(Messages.animationRunning);
+                            return;
+                        }
+                    }
                     if (playerHoldKeyAndRemove(e.getPlayer(), c)) {
                         CratesManager.getInstance().startAnimationList(c, e.getPlayer());
                     } else {

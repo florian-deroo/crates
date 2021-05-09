@@ -5,6 +5,7 @@ import fr.flushfr.crates.objects.animation.data.SoundData;
 import fr.flushfr.crates.objects.error.*;
 import fr.flushfr.crates.utils.Convert;
 import fr.flushfr.crates.utils.ItemBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -68,6 +69,7 @@ public class ErrorManager {
         return i;
     }
 
+
     public int getInt(FileConfiguration f, String path, Error e) {
         if (!f.contains(path)) {
             e.setErrorType(ErrorType.UNDEFINED);
@@ -79,6 +81,24 @@ public class ErrorManager {
             return 0;
         }
         return f.getInt(path);
+    }
+
+    public double getDouble(FileConfiguration f, String path) {
+        return getDouble(f, path,  new Error());
+    }
+
+
+    public double getDouble(FileConfiguration f, String path, Error e) {
+        if (!f.contains(path)) {
+            e.setErrorType(ErrorType.UNDEFINED);
+            addError(e);
+            return 0;
+        } else if (!(f.get(path) instanceof Double || f.get(path) instanceof Integer)) {
+            e.setErrorType(ErrorType.INCORRECT_DOUBLE);
+            addError(e);
+            return 0;
+        }
+        return f.getDouble(path);
     }
 
     public String getString(FileConfiguration f, String path) {

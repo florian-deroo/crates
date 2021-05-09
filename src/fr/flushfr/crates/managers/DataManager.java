@@ -31,12 +31,19 @@ public class DataManager {
         Messages.cratesLocationSet = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "crates-location-set"));
         Messages.cratesLocationRemoved = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "crates-location-remove"));
         Messages.addMissedKeyDueToFullInventory = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "add-missed-key-due-to-full-inventory"));
-        Messages.dropItemInventoryFull = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "drop-item-inventory-full"));
+        Messages.inventoryFull = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "inventory-full"));
         Messages.noCrateMatch = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "no-crate-found"));
+        Messages.animationRunning = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "animation-started"));
+        Messages.receivedKey = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "key-received"));
+        Messages.inventoryFull = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "inventory-full"));
 
         Data.adminPermission = ErrorManager.getInstance().getString(getMainInstance().getConfig(), "permission.admin", new Error(ErrorCategory.CONFIG, "config","permission","admin"));
         Data.playerPermission = ErrorManager.getInstance().getString(getMainInstance().getConfig(), "permission.player", new Error(ErrorCategory.CONFIG, "config","permission","player"));
         Data.colorListHologram = ErrorManager.getInstance().getStringList(getMainInstance().getConfig(), "hologram.colored-animation.color-list", new Error(ErrorCategory.CONFIG, "config", "hologram.colored-animation", "color-list"));
         Data.refreshTime = ErrorManager.getInstance().getInt(getMainInstance().getConfig(), "hologram.colored-animation.refreshColorTime", new Error(ErrorCategory.CONFIG, "config", "hologram.colored-animation", "refreshColorTime"));
+        Data.spaceBetweenHolograms = ErrorManager.getInstance().getDouble(getMainInstance().getConfig(), "hologram.space-between-holograms", new Error(ErrorCategory.CONFIG, "config", "hologram", "space-between-holograms"));
+        Data.spaceBetweenHologramsAndBlock = ErrorManager.getInstance().getDouble(getMainInstance().getConfig(), "hologram.space-between-holograms-and-crates", new Error(ErrorCategory.CONFIG, "config", "hologram", "space-between-holograms-and-crates"));
+        Data.minTPS = ErrorManager.getInstance().getDouble(getMainInstance().getConfig(), "lag-security.tps-min", new Error(ErrorCategory.CONFIG, "config", "lag-security", "tps-min"));
+        Data.minTPSProtectionEnable = ErrorManager.getInstance().getBoolean(getMainInstance().getConfig(), "lag-security.should-plugin-disable", new Error(ErrorCategory.CONFIG, "config", "lag-security", "should-plugin-disable"));
     }
 }

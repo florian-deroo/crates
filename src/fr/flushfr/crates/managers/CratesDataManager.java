@@ -118,7 +118,7 @@ public class CratesDataManager {
     public TitleMessage extractTitleData (FileConfiguration f, String path, String fileName) {
         HashMap<String, String> data = getDataFromAnimation(path, f);
         boolean everyone = false;
-        int stay = 10;
+        int stay = 1;
         int fadeOut = 0;
         int fadeIn = 0;
         String title = "";
@@ -127,15 +127,15 @@ public class CratesDataManager {
             if (dataName.equals("everyone")) {
                 everyone = Boolean.parseBoolean(data.get(dataName));
             }
-            if (dataName.equals("stay-time")) {
-                stay = ErrorManager.getInstance().parseInt(data.get(dataName), new Error(ErrorCategory.ANIMATION, fileName, path, "stay-time"));
-            }
-            if (dataName.equals("fadein-time")) {
-                fadeIn = ErrorManager.getInstance().parseInt(data.get(dataName), new Error(ErrorCategory.ANIMATION, fileName, path, "fadein-time"));
-            }
-            if (dataName.equals("fadeout-time")) {
-                fadeOut = ErrorManager.getInstance().parseInt(data.get(dataName), new Error(ErrorCategory.ANIMATION, fileName, path, "fadeout-time"));
-            }
+            //if (dataName.equals("stay-time")) {
+            //    stay = ErrorManager.getInstance().parseInt(data.get(dataName), new Error(ErrorCategory.ANIMATION, fileName, path, "stay-time"));
+            //}
+            //if (dataName.equals("fadein-time")) {
+            //    fadeIn = ErrorManager.getInstance().parseInt(data.get(dataName), new Error(ErrorCategory.ANIMATION, fileName, path, "fadein-time"));
+            //}
+            //if (dataName.equals("fadeout-time")) {
+            //    fadeOut = ErrorManager.getInstance().parseInt(data.get(dataName), new Error(ErrorCategory.ANIMATION, fileName, path, "fadeout-time"));
+            //}
             if (dataName.equals("title")) {
                 title = data.get(dataName);
             }
@@ -286,10 +286,10 @@ public class CratesDataManager {
                         fadeColor = Utils.getColor(value);
                         break;
                     case "lifetime":
-                        lifeTime = Integer.parseInt(value);
+                        lifeTime = ErrorManager.getInstance().parseInt(value, new Error(ErrorCategory.ANIMATION, fileName, path, "lifetime"));
                         break;
                     case "power":
-                        power = Integer.parseInt(value);
+                        power = ErrorManager.getInstance().parseInt(value, new Error(ErrorCategory.ANIMATION, fileName, path, "power"));
                         break;
                     case "trail":
                         trail = Boolean.parseBoolean(value);

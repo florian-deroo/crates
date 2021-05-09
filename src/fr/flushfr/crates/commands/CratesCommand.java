@@ -4,6 +4,7 @@ import fr.flushfr.crates.managers.CratesManager;
 import fr.flushfr.crates.managers.FileManager;
 import fr.flushfr.crates.managers.RewardManager;
 import fr.flushfr.crates.objects.Crates;
+import fr.flushfr.crates.objects.Data;
 import fr.flushfr.crates.objects.Messages;
 import fr.flushfr.crates.utils.Convert;
 import org.bukkit.Bukkit;
@@ -22,13 +23,30 @@ public class CratesCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
         if (args.length == 0) {
+            commandSender.sendMessage(Messages.errorCommand);
+            return true;
+        }
+        if (!commandSender.hasPermission(Data.playerPermission)) {
+            commandSender.sendMessage(Messages.permissionDenied);
+            return true;
+        }
+        if (args[0].toLowerCase().equals("claim")) {
+            if (RewardManager.getInstance().hasPlayerMissedRewards(commandSender.getName())) {
+                RewardManager.getInstance().giveMissedRewards(commandSender.getName());
+            } else {
+                commandSender.sendMessage(Messages.noMissedRewards);
+            }
+            return true;
+        }
+        if (!commandSender.hasPermission(Data.adminPermission)) {
+            commandSender.sendMessage(Messages.permissionDenied);
             return true;
         }
         switch (args[0].toLowerCase()) {
             case "give":
-                if (args.length < 4) {
+                if (args.length < 3 ) {
                     commandSender.sendMessage(Messages.errorArgGiveCommand);
-                    break;
+                    return true;
                 }
                 Crates crate = CratesManager.getInstance().matchCrate(args[3]);
                 if (crate==null) {
@@ -37,26 +55,27 @@ public class CratesCommand implements CommandExecutor {
                 }
                 switch (args[1].toLowerCase()) {
                     case "to":
+                        if (!(args.length == 4 || args.length == 5)) {
+                            commandSender.sendMessage(Messages.errorArgGiveCommand);
+                            return true;
+                        }
                         try {
-                            RewardManager.getInstance().giveKeyToPlayer(args[2], crate, args.length<5 ? 1 : Integer.parseInt(args[4]));
+                            RewardManager.getInstance().giveKeyToPlayer(args[2], crate, args.length==4 ? 1 : Integer.parseInt(args[4]));
                             commandSender.sendMessage(Convert.replaceValues(Messages.successfullyGive, "%player%", args[2]));
-                        } catch (NumberFormatException | NullPointerException e) {
-                            Bukkit.broadcastMessage(args[2]);
+                        } catch (NumberFormatException e) {
+                            commandSender.sendMessage(Messages.errorArgGiveCommand);
                         }
                         break;
                     case "all":
+                        if (!(args.length == 3 || args.length == 4)) {
+                            commandSender.sendMessage(Messages.errorArgGiveCommand);
+                            return true;
+                        }
                         for (Player p : Bukkit.getOnlinePlayers()) {
-                            RewardManager.getInstance().giveKeyToPlayer(p.getName(), crate, args.length<5 ? 1 : Integer.parseInt(args[4]));
+                            RewardManager.getInstance().giveKeyToPlayer(p.getName(), crate, args.length==3 ? 1 : Integer.parseInt(args[3]));
                         }
                         commandSender.sendMessage(Messages.successfullyGiveAll);
                         return true;
-                }
-                break;
-            case "claim":
-                if (RewardManager.getInstance().hasPlayerMissedRewards(commandSender.getName())) {
-                    RewardManager.getInstance().giveMissedRewards(commandSender.getName());
-                } else {
-                    commandSender.sendMessage(Messages.noMissedRewards);
                 }
                 break;
             case "reload":

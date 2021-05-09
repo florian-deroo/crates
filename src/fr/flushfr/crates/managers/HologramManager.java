@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -59,9 +60,11 @@ public class HologramManager {
 
     public void displayHologram (Location hologramLocation, List<String> hologramLines, String crateName) {
         Location loc = hologramLocation.clone();
+        loc.setY(loc.getY()-1.35+Data.spaceBetweenHologramsAndBlock);
+        Collections.reverse(hologramLines);
         for (String l : hologramLines) {
             spawnHologram(loc, l, crateName);
-            loc.setY(loc.getY()+0.3);
+            loc.setY(loc.getY()+Data.spaceBetweenHolograms);
         }
     }
 

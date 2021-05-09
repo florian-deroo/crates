@@ -9,8 +9,8 @@ import fr.flushfr.crates.objects.Messages;
 import fr.flushfr.crates.utils.Convert;
 import fr.flushfr.crates.utils.Logger;
 import fr.flushfr.crates.utils.TitleBar;
-import fr.flushfr.license.DataLicense;
-import fr.flushfr.license.License;
+import fr.flushfr.crates.objects.DataLicense;
+import fr.flushfr.crates.objects.License;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,6 +30,7 @@ public class Main extends JavaPlugin {
     public boolean isDisable = false;
     public DataLicense dataLicense;
     public boolean licenseAlreadyChecked;
+    public boolean isTPSProtectionStarted = false;
 
     @Override
     public void onEnable () {
@@ -66,13 +67,13 @@ public class Main extends JavaPlugin {
 
         if (errorList.isEmpty()) {
             Logger.getInstance().spacer();
-            Logger.getInstance().log(Level.INFO, "          Crates Plugin by Flush#3805");
+            Logger.getInstance().log(Level.INFO, "          Crates Plugin by Flush#0001");
             Logger.getInstance().log(Level.INFO, "");
             Logger.getInstance().log(Level.INFO, "> Loaded successfully");
             Logger.getInstance().spacer();
         } else {
             Logger.getInstance().spacer();
-            Logger.getInstance().log(Level.INFO, "          Crates Plugin by Flush#3805");
+            Logger.getInstance().log(Level.INFO, "          Crates Plugin by Flush#0001");
             Logger.getInstance().log(Level.INFO, "");
             Logger.getInstance().log(Level.WARNING, "An error occurred while enabling");
             for (String error: errorList) {
@@ -95,8 +96,13 @@ public class Main extends JavaPlugin {
         if (!licenseAlreadyChecked) {
             licenseAlreadyChecked= true;
             Logger.getInstance().log(Level.INFO, "Checking your license key, please wait.");
+            int i = 0;
             dataLicense = License.getLicenseResponse(getConfig().getString("license-key"));
             while (dataLicense==null) { // RETRY TO CONNECT
+                i++;
+                if (i>15) {
+                    break;
+                }
                 Logger.getInstance().log(Level.INFO, "Connection failed, trying to reconnect.");
                 dataLicense = License.getLicenseResponse(getConfig().getString("license-key"));
             }
@@ -115,6 +121,7 @@ public class Main extends JavaPlugin {
         CratesDataManager.getInstance().saveDataFromCratesFile();
 
         CratesManager.getInstance().initProtected();
+        CratesManager.getInstance().initTPSChecker();
 
         HologramManager.getInstance().launchHologramMultiColor();
         HologramManager.getInstance().displayAllHologram();
@@ -127,6 +134,7 @@ public class Main extends JavaPlugin {
                 p.sendMessage(Convert.replaceValues(Messages.reloadSuccess, "%reload-time%",duration.toMillis()+""));
             }
         }
+
         if (dataLicense!=null) {
             if (!dataLicense.isLicense_valid()) {
                 errorList.add("License key invalid");

@@ -28,12 +28,14 @@ public class RewardManager {
     }
     public void addMissedReward (String player, String crateName, int amount) {
         List<String> listPreviousReward = FileManager.getInstance().getMissedRewardConfig().getStringList(player);
-        List<String> listReward = FileManager.getInstance().getMissedRewardConfig().getStringList(player);
+        List<String> listReward = new ArrayList<>();
         boolean alreadyAdded = false;
         for (String rewards: listPreviousReward) {
-            if (rewards.split(":")[0].equals(crateName) && !alreadyAdded) {
-                listReward.add(crateName+":"+Integer.parseInt(rewards.split(":")[1])+amount);
-                alreadyAdded = true;
+            if (rewards.split(":")[0].equals(crateName)) {
+                int i = Integer.parseInt(rewards.split(":")[1])+amount;
+                listReward.add(crateName+":"+i);
+                alreadyAdded=true;
+                break;
             } else {
                 listReward.add(rewards);
             }
@@ -42,8 +44,8 @@ public class RewardManager {
             listReward.add(crateName+":"+amount);
         }
         FileManager.getInstance().getMissedRewardConfig().set(player, listReward);
-        FileManager.getInstance().reloadMissedRewardsConfig();
         FileManager.getInstance().saveMissedRewardConfig();
+        FileManager.getInstance().reloadMissedRewardsConfig();
     }
 
     public Reward getRandomRewardFromCrate (Crates c) {
@@ -60,24 +62,26 @@ public class RewardManager {
     }
 
     public void giveKeyToPlayer (String player, Crates crate, int amount) {
-        if (Bukkit.getPlayer(player).isOnline()) {
-            Player p = Bukkit.getPlayer(player);
+        try {
+            Player p = Bukkit.getPlayerExact(player);
             if (RewardManager.getInstance().isInvFull(p.getInventory())) {
                 ItemStack key = crate.getKeyItem().build();
                 key.setAmount(amount);
                 p.getInventory().addItem(key);
-
+                p.sendMessage(Messages.receivedKey);
             } else {
                 RewardManager.getInstance().addMissedReward(player, crate.getCrateName(), amount);
                 p.sendMessage(Messages.addMissedKeyDueToFullInventory);
             }
-        } else {
+        } catch (NullPointerException e) {
             RewardManager.getInstance().addMissedReward(player, crate.getCrateName(), amount);
         }
     }
 
     public void giveRewardToPlayer (Reward r, Player p) {
-        for (String commands : r.getCommands()) {Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commands.replaceAll("%player%",p.getName()));}
+        for (String commands : r.getCommands()) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commands.replaceAll("%player%",p.getName()));
+        }
         if (r.isGiveItemDisplay()) {
             giveItemToPlayer(p, r.getItemToGive().build());
         }
@@ -92,8 +96,8 @@ public class RewardManager {
                 FileManager.getInstance().getMissedRewardConfig().set(player, new ArrayList<>());
             }
         }
-        FileManager.getInstance().reloadMissedRewardsConfig();
         FileManager.getInstance().saveMissedRewardConfig();
+        FileManager.getInstance().reloadMissedRewardsConfig();
     }
 
     public void giveItemToPlayer (Player p, ItemStack reward) {
@@ -101,7 +105,7 @@ public class RewardManager {
             p.getInventory().addItem(reward);
         } else {
             Bukkit.getWorld(p.getWorld().getName()).dropItemNaturally(p.getLocation(), reward);
-            p.sendMessage(Messages.dropItemInventoryFull);
+            p.sendMessage(Messages.inventoryFull);
         }
     }
 

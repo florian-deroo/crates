@@ -114,7 +114,7 @@ public class FileManager {
 
     public void saveMissedRewardConfig() {
         try {
-            getCratesLocationConfig().save(new File(getMainInstance().getDataFolder(),  pathMissedRewardsConfig));
+            getMissedRewardConfig().save(new File(getMainInstance().getDataFolder(),  pathMissedRewardsConfig));
         } catch (IOException ex) {
             Logger.getInstance().log(Level.SEVERE, "Error while saving"+ pathMissedRewardsConfig);
         }

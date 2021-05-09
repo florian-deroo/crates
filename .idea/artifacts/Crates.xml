@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="Crates">
-    <output-path>$USER_HOME$/Desktop/MC/DevServer#2/plugins</output-path>
+    <output-path>$PROJECT_DIR$/out/artifacts/Crates</output-path>
     <root id="archive" name="Crates.jar">
       <element id="module-output" name="Crates" />
     </root>

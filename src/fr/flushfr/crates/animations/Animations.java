@@ -10,6 +10,7 @@ import fr.flushfr.crates.utils.ActionBar;
 import fr.flushfr.crates.utils.Convert;
 import fr.flushfr.crates.utils.TitleBar;
 import fr.flushfr.crates.utils.Utils;
+import org.apache.logging.log4j.core.filter.BurstFilter;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftFirework;
 import org.bukkit.entity.ArmorStand;
@@ -23,6 +24,7 @@ import org.bukkit.util.EulerAngle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static fr.flushfr.crates.Main.getMainInstance;
 
@@ -112,7 +114,7 @@ public class Animations {
                     }
 
                 } else if (s.getIterator()==73) {
-                    s.setArmorStandRewardName(HologramManager.getInstance().spawnHologram(l, Convert.colorString(simpleRotationData.getRewardNameHologram().replaceAll("%item-name%", reward.getItemPresentation().getName().equals("") ? reward.getItemPresentation().build().getType().name() : reward.getItemPresentation().getName()).replaceAll("%amount%", reward.getItemPresentation().build().getAmount()+"").replaceAll("%chance%", reward.getProbability()+"")), "toRemove"));
+                    s.setArmorStandRewardName(HologramManager.getInstance().spawnHologram(l, Convert.colorString(simpleRotationData.getRewardNameHologram().replaceAll("%reward%", reward.getItemPresentation().getName().equals("") ? reward.getItemPresentation().build().getType().name() : reward.getItemPresentation().getName()).replaceAll("%amount%", reward.getItemPresentation().build().getAmount()+"").replaceAll("%chance%", reward.getProbability()+"")), "toRemove"));
                     HologramManager.getInstance().addHologramToRemove(s.getArmorStandRewardName());
                     for (int i = 0; i<10;i++) {
                         s.getLocation().getWorld().playEffect(s.getLocation(), Effect.FIREWORKS_SPARK, 10, 10);
@@ -185,7 +187,8 @@ public class Animations {
         ((CraftFirework)fw).getHandle().expectedLifespan = fireworkData.getLifeTime();
     }
 
-    public void startRollAnimation(Crates c, RollData rollData, AnimationStatus animationStatus) {
+    public void startRollAnimation(Crates c, Reward reward, RollData rollData, AnimationStatus animationStatus) {
+        AtomicBoolean end = new AtomicBoolean(false);
         Location itemHologramLocation = c.getCrateLocation().clone();
         itemHologramLocation.setX(itemHologramLocation.getX()+0.5);
         itemHologramLocation.setZ(itemHologramLocation.getZ()+0.5);
@@ -212,12 +215,25 @@ public class Animations {
                     Bukkit.getWorld(c.getCrateLocation().getWorld().getName()).playSound(itemHologramLocation, rollAnimation.isSoundChange() ? rollData.getSound1().getSound() : rollData.getSound2().getSound(), rollData.getSound2().getVolume(), rollData.getSound2().getPitch());
                     rollAnimation.setSoundChange(!rollAnimation.isSoundChange());
                     HologramManager.getInstance().updateRollArmorstand(rollAnimation, itemHologram, nameHologram);
-                } else if (i==190) {
-                    itemHologram.getPassenger().remove();
-                    itemHologram.remove();
-                    nameHologram.remove();
-                    animationStatus.setEnded(true);
-                    cancel();
+                } else if (i>130 && i%20 == 0) {
+
+                    if (i>189& end.get()) {
+                        itemHologram.getPassenger().remove();
+                        itemHologram.remove();
+                        nameHologram.remove();
+                        animationStatus.setEnded(true);
+                        cancel();
+                        return;
+                    }
+                    if (!end.get()) {
+                        if (Utils.isItemSimilar(reward.getItemToGive().build(), rollAnimation.getRewards().get((rollAnimation.getIndexInList()-1)%rollAnimation.getRewards().size()).getItemToGive().build(), false)) {
+                            end.set(true);
+                        } else {
+                            Bukkit.getWorld(c.getCrateLocation().getWorld().getName()).playSound(itemHologramLocation, rollAnimation.isSoundChange() ? rollData.getSound1().getSound() : rollData.getSound2().getSound(), rollData.getSound2().getVolume(), rollData.getSound2().getPitch());
+                            rollAnimation.setSoundChange(!rollAnimation.isSoundChange());
+                            HologramManager.getInstance().updateRollArmorstand(rollAnimation, itemHologram, nameHologram);
+                        }
+                    }
                 }
                 rollAnimation.setI(i+1);
             }

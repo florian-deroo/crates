@@ -1,6 +1,4 @@
-package fr.flushfr.crates.objects;
-
-import com.google.gson.Gson;
+package license;
 
 import java.io.BufferedReader;
 import java.io.IOException;

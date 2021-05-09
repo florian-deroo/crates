@@ -1,4 +1,4 @@
-package fr.flushfr.crates.objects;
+package license;
 
 public class DataLicense {
     private boolean license_valid = false;

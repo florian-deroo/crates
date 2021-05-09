@@ -6,49 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fd5b078d-5fc8-4555-978a-c48b73a7b64f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/Crates.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/Crates.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Crates.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Crates.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/animations/Animations$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/animations/Animations$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/animations/Animations$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/animations/Animations$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/animations/Animations$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/animations/Animations$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/animations/Animations$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/animations/Animations$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/animations/Animations.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/animations/Animations.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/commands/CratesCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/commands/CratesCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/listeners/PlayerListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/listeners/PlayerListener.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/CratesDataManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/CratesDataManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/CratesManager$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/CratesManager$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/CratesManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/CratesManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/DataManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/DataManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/ErrorManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/ErrorManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/FileManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/FileManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/HologramManager$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/HologramManager$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/HologramManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/HologramManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/RewardManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/managers/RewardManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/objects/Data.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/objects/Data.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/objects/Messages.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/objects/Messages.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/objects/error/ErrorType.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/crates/objects/error/ErrorType.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/license/DataLicense.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Crates/fr/flushfr/license/License.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/animations/Animations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/animations/Animations.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/commands/CratesCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/commands/CratesCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/listeners/PlayerListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/listeners/PlayerListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/CratesDataManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/CratesDataManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/CratesManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/CratesManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/DataManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/DataManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/ErrorManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/ErrorManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/FileManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/FileManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/HologramManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/HologramManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/RewardManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/managers/RewardManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/objects/Data.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/objects/Data.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/objects/Messages.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/objects/Messages.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/crates/objects/error/ErrorType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/objects/error/ErrorType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/license/DataLicense.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/objects/DataLicense.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fr/flushfr/license/License.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fr/flushfr/crates/objects/License.java" afterDir="false" />
-    </list>
+    <list default="true" id="fd5b078d-5fc8-4555-978a-c48b73a7b64f" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

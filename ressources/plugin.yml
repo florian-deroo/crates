@@ -1,5 +1,5 @@
 name: Crates
-version: 1.1
+version: 1.0.1
 author: FlushFR
 main: fr.flushfr.crates.Main
 commands:

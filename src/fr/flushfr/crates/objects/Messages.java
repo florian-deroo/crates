@@ -1,7 +1,8 @@
 package fr.flushfr.crates.objects;
 
 public class Messages {
-    public static String[] errorCommand;
+    public static String[] errorCommandPlayer;
+    public static String[] errorCommandAdmin;
     public static String[] receivedKey;
     public static String[] noMissedRewards;
     public static String[] permissionDenied;
@@ -10,7 +11,6 @@ public class Messages {
     public static String[] cratesLocationSet;
     public static String[] cratesLocationRemoved;
     public static String[] noKey;
-    public static String[] errorArgGiveCommand;
     public static String[] addMissedKeyDueToFullInventory;
     public static String[] inventoryFull;
     public static String[] animationRunning;

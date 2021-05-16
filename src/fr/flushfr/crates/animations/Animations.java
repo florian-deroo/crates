@@ -96,6 +96,8 @@ public class Animations {
         s.getArmorStand().setVisible(false);
         s.getArmorStand().setCanPickupItems(false);
         s.getArmorStand().setItemInHand(item);
+        s.getArmorStand().setCustomName("DO NOT TOUCH");
+        s.getArmorStand().setCustomNameVisible(false);
         s.getArmorStand().setRightArmPose(new EulerAngle(Math.toRadians(-20),Math.toRadians(-45),Math.toRadians(0)));
         new BukkitRunnable() {
             @Override
@@ -136,13 +138,13 @@ public class Animations {
         AnimationManager.getInstance().animationStarted.add(AO);
         HologramManager.getInstance().addHologramToRemove(AO.getArmorstand());
         AO.getArmorstand().setGravity(false);
-        AO.getArmorstand().setCanPickupItems(false);
         AO.getArmorstand().setVisible(false);
-        AO.getArmorstand().setCanPickupItems(false);
         AO.getArmorstand().setBodyPose(new EulerAngle(Math.toRadians(0),Math.toRadians(0),Math.toRadians(0)));
         AO.getArmorstand().setRightArmPose(new EulerAngle(Math.toRadians(81),0,0));
         AO.getArmorstand().setItemInHand(epicSwordData.getItem1());
         AO.getArmorstand().setCanPickupItems(false);
+        AO.getArmorstand().setCustomName("DO NOT TOUCH");
+        AO.getArmorstand().setCustomNameVisible(false);
         AO.setParticleLocation(new Location(c.getCrateLocation().getWorld(), Math.round(c.getCrateLocation().getX())+0.5, Math.round(c.getCrateLocation().getY()), Math.round(c.getCrateLocation().getZ()+0.5)));
         new BukkitRunnable() {
             @Override
@@ -163,7 +165,6 @@ public class Animations {
                     if (AO.getTeta() % 100 == 0) {
                         AO.getArmorstand().setItemInHand(new ItemStack((AO.isChangeSword()) ? epicSwordData.getItem1().getType() : epicSwordData.getItem2().getType()));
                         AO.setChangeSword(!AO.isChangeSword());
-                        AO.getArmorstand().setCanPickupItems(false);
                     }
                     AO.getParticleLocation().setX(Math.round(c.getCrateLocation().getX()) + 0.5 + Math.cos(Math.toRadians(AO.getTeta())));
                     AO.getArmorstandLocation().setY(Math.round(c.getCrateLocation().getY()) + AO.getDeltahigh());
@@ -199,6 +200,8 @@ public class Animations {
         ArmorStand nameHologram = HologramManager.getInstance().spawnHologram(nameHologramLocation,c.getRewards().get(0).getItemPresentation().build().getItemMeta().getDisplayName(), "toRemove");
         nameHologram.setCustomNameVisible(true);
         itemHologram.setCanPickupItems(false);
+        itemHologram.setCustomName("DO NOT TOUCH");
+        itemHologram.setCustomNameVisible(false);
         RollAnimation rollAnimation= new RollAnimation(c.getRewards(), rollData.getHologramOnRolling());
         new BukkitRunnable() {
             @Override

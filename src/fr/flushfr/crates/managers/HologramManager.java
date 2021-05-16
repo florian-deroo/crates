@@ -6,18 +6,15 @@ import fr.flushfr.crates.objects.Reward;
 import fr.flushfr.crates.objects.animation.process.EpicSwordAnimation;
 import fr.flushfr.crates.objects.animation.process.RollAnimation;
 import fr.flushfr.crates.utils.Convert;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static fr.flushfr.crates.Main.getMainInstance;
 
@@ -54,12 +51,16 @@ public class HologramManager {
 
     public void displayAllHologram () {
         for (Crates o : CratesManager.getInstance().crates) {
+            checkHologramBugged(o.getHologramLocation());
             displayHologram(o.getHologramLocation(),o.getHologramAmbient(), o.getCrateName());
         }
     }
 
     public void displayHologram (Location hologramLocation, List<String> hologramLines, String crateName) {
         Location loc = hologramLocation.clone();
+        if (loc.getWorld()==null) {
+            return;
+        }
         loc.setY(loc.getY()-1.35+Data.spaceBetweenHologramsAndBlock);
         Collections.reverse(hologramLines);
         for (String l : hologramLines) {
@@ -69,14 +70,18 @@ public class HologramManager {
     }
 
     public ArmorStand spawnItemHologram (Location l, ItemStack itemStack, String crateName) {
-        Item i = Bukkit.getWorld("world").dropItem(l, itemStack);
+        Item i = l.getWorld().dropItem(l, itemStack);
         Location loc = l.clone();
         loc.setY(loc.getY()+0.5);
-        i.setPickupDelay(1000000);
         ArmorStand as = (ArmorStand) l.getWorld().spawnCreature(loc, EntityType.ARMOR_STAND);
         as.setPassenger(i);
         as.setGravity(false);
         as.setVisible(false);
+        as.setCustomName("DO NOT TOUCH");
+        as.setCustomNameVisible(false);
+        i.setPickupDelay(1000000);
+        i.setCustomName("DO NOT TOUCH");
+        i.setCustomNameVisible(false);
         itemToRemove.add(i);
         List<ArmorStand> li = HologramManager.getInstance().crateHologram.containsKey(crateName) ? HologramManager.getInstance().crateHologram.get(crateName) : new ArrayList<>();
         li.add(as);
@@ -84,6 +89,14 @@ public class HologramManager {
         return as;
     }
 
+    public void checkHologramBugged(Location l) {
+        Collection<Entity> armorStand = l.getWorld().getNearbyEntities(l, 1.0, 10.0, 1.0);
+        for (Entity entity:armorStand) {
+            if (entity.getType()==EntityType.ARMOR_STAND && entity.isCustomNameVisible()) {
+                entity.remove();
+            }
+        }
+    }
 
     public void hideOrRevealHologram (List<ArmorStand> armorStandList, boolean visible) {
         if (armorStandList.isEmpty()) {
@@ -116,7 +129,8 @@ public class HologramManager {
     }
 
     public ArmorStand spawnHologram (Location l, String line, String crateName) {
-        ArmorStand as = (ArmorStand) Bukkit.getWorld("world").spawnEntity(l, EntityType.ARMOR_STAND);
+        ArmorStand as = (ArmorStand) l.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
+        as.setCanPickupItems(false);
         as.setGravity(false);
         if (line!=null && !line.equals("")) {
             if (line.contains("&u")) {

@@ -3,18 +3,19 @@ package fr.flushfr.crates;
 import fr.flushfr.crates.animations.Animations;
 import fr.flushfr.crates.commands.CrateTabCompleter;
 import fr.flushfr.crates.commands.CratesCommand;
+import fr.flushfr.crates.license.LicenceVerif;
+import fr.flushfr.crates.license.VersionChecker;
 import fr.flushfr.crates.listeners.PlayerListener;
 import fr.flushfr.crates.managers.*;
 import fr.flushfr.crates.objects.Messages;
 import fr.flushfr.crates.utils.Convert;
 import fr.flushfr.crates.utils.Logger;
 import fr.flushfr.crates.utils.TitleBar;
-import license.DataLicense;
-import license.License;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -28,8 +29,6 @@ public class Main extends JavaPlugin {
 
     public List<String> errorList = new ArrayList<>();
     public boolean isDisable = false;
-    public DataLicense dataLicense;
-    public boolean licenseAlreadyChecked;
     public boolean isTPSProtectionStarted = false;
 
     @Override
@@ -53,6 +52,7 @@ public class Main extends JavaPlugin {
         new ErrorManager();
         new Logger();
         new TitleBar();
+        new VersionChecker(46);
     }
 
     public void onDisable () {
@@ -93,20 +93,10 @@ public class Main extends JavaPlugin {
         ZonedDateTime start = ZonedDateTime.now();
 
         initInstance();
-        if (!licenseAlreadyChecked) {
-            licenseAlreadyChecked= true;
-            Logger.getInstance().log(Level.INFO, "Checking your license key, please wait.");
-            int i = 0;
-            dataLicense = License.getLicenseResponse(getConfig().getString("license-key"));
-            while (dataLicense==null) { // RETRY TO CONNECT
-                i++;
-                if (i>15) {
-                    break;
-                }
-                Logger.getInstance().log(Level.INFO, "Connection failed, trying to reconnect.");
-                dataLicense = License.getLicenseResponse(getConfig().getString("license-key"));
-            }
-        }
+        LicenceVerif dataLicense = new LicenceVerif(getConfig().getString("license-key"), "GROUPE_5ddf8c2cb8a9d95");
+        Logger.getInstance().log(Level.INFO, "Checking your license key, please wait.");
+        dataLicense.check();
+
 
         FileManager.getInstance().saveDefaultCratesFiles();
         FileManager.getInstance().saveDefaultLanguageFile();
@@ -134,18 +124,8 @@ public class Main extends JavaPlugin {
                 p.sendMessage(Convert.replaceValues(Messages.reloadSuccess, "%reload-time%",duration.toMillis()+""));
             }
         }
-
-        if (dataLicense!=null) {
-            if (!dataLicense.isLicense_valid()) {
-                errorList.add("License key invalid");
-                disable();
-            }
-            if (!dataLicense.isIp_authorized() && dataLicense.isIp_limit_reached()) {
-                errorList.add("IP limit reached on this license key");
-                disable();
-            }
-        } else {
-            errorList.add("Error while loading please contact me or use /reload.");
+        if (!dataLicense.isValid()) {
+            errorList.add("License key invalid");
             disable();
         }
         sendInformationConsole();

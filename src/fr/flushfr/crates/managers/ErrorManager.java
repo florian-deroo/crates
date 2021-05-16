@@ -74,11 +74,11 @@ public class ErrorManager {
         if (!f.contains(path)) {
             e.setErrorType(ErrorType.UNDEFINED);
             addError(e);
-            return 0;
+            return 1;
         } else if (!(f.get(path) instanceof Integer)) {
             e.setErrorType(ErrorType.INCORRECT_INTEGER);
             addError(e);
-            return 0;
+            return 1;
         }
         return f.getInt(path);
     }

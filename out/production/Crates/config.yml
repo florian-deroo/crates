@@ -1,0 +1,24 @@
+license-key: ""
+language: "fr_FR"
+permission:
+  admin: "crates.admin"
+  player: "crates.player"
+preview-crates: #Lore under each items on the preview
+  lore-under:
+    - "&8&m                                "
+    - "&8➣ &7Chance: &5%chance%"
+hologram:
+  space-between-holograms: 0.26 #Space between holograms
+  space-between-holograms-and-crates: 0.8 #Space between crate block and last line of hologram
+  colored-animation: #You can configure the &u colors, and speed of color changing
+    refreshColorTime: 5
+    color-list:
+      - "&a"
+      - "&c"
+      - "&b"
+      - "&6"
+      - "&e"
+lag-security: #Enalbe this if you want to disable the plugin under tps-min
+  should-plugin-disable: false
+  tps-min: 10
+

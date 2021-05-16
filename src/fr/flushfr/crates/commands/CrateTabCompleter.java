@@ -2,6 +2,7 @@ package fr.flushfr.crates.commands;
 
 import fr.flushfr.crates.managers.CratesManager;
 import fr.flushfr.crates.objects.Data;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -39,10 +40,11 @@ public class CrateTabCompleter implements TabCompleter {
                         break;
                 }
             }
-            if (args.length==4) {
-                if (args[0].toLowerCase().equals("give") && (args[1].toLowerCase().equals("to") || args[1].toLowerCase().equals("all"))) {
-                    newList.addAll(CratesManager.getInstance().cratesName);
-                }
+            if (args.length==3 && args[0].toLowerCase().equals("give") && args[1].toLowerCase().equals("all")) {
+                newList.addAll(CratesManager.getInstance().cratesName);
+            }
+            if (args.length==4 && args[0].toLowerCase().equals("give") && args[1].toLowerCase().equals("to")) {
+                newList.addAll(CratesManager.getInstance().cratesName);
             }
         }
         if (newList.isEmpty()) {

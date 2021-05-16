@@ -23,7 +23,11 @@ public class CratesCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
         if (args.length == 0) {
-            commandSender.sendMessage(Messages.errorCommand);
+            if (commandSender.hasPermission(Data.adminPermission)) {
+                commandSender.sendMessage(Messages.errorCommandAdmin);
+            } else {
+                commandSender.sendMessage(Messages.errorCommandPlayer);
+            }
             return true;
         }
         if (!commandSender.hasPermission(Data.playerPermission)) {
@@ -44,35 +48,37 @@ public class CratesCommand implements CommandExecutor {
         }
         switch (args[0].toLowerCase()) {
             case "give":
-                if (args.length < 3 ) {
-                    commandSender.sendMessage(Messages.errorArgGiveCommand);
+                if (args.length <= 3 ) {
+                    commandSender.sendMessage(Messages.errorCommandAdmin);
                     return true;
                 }
-                Crates crate = CratesManager.getInstance().matchCrate(args[3]);
-                if (crate==null) {
-                    commandSender.sendMessage(Messages.noCrateMatch);
-                    return true;
-                }
+                Crates crate;
                 switch (args[1].toLowerCase()) {
                     case "to":
+                        crate = CratesManager.getInstance().matchCrate(args[3]);
+                        if (crate==null) {
+                            commandSender.sendMessage(Convert.replaceValues(Messages.noCrateMatch, "%crate%", args[3]));
+                            return true;
+                        }
                         if (!(args.length == 4 || args.length == 5)) {
-                            commandSender.sendMessage(Messages.errorArgGiveCommand);
+                            commandSender.sendMessage(Messages.errorCommandAdmin);
                             return true;
                         }
                         try {
                             RewardManager.getInstance().giveKeyToPlayer(args[2], crate, args.length==4 ? 1 : Integer.parseInt(args[4]));
                             commandSender.sendMessage(Convert.replaceValues(Messages.successfullyGive, "%player%", args[2]));
                         } catch (NumberFormatException e) {
-                            commandSender.sendMessage(Messages.errorArgGiveCommand);
+                            commandSender.sendMessage(Messages.errorCommandAdmin);
                         }
                         break;
                     case "all":
-                        if (!(args.length == 3 || args.length == 4)) {
-                            commandSender.sendMessage(Messages.errorArgGiveCommand);
+                        crate = CratesManager.getInstance().matchCrate(args[2]);
+                        if (crate==null) {
+                            commandSender.sendMessage(Convert.replaceValues(Messages.noCrateMatch, "%crate%", args[2]));
                             return true;
                         }
                         for (Player p : Bukkit.getOnlinePlayers()) {
-                            RewardManager.getInstance().giveKeyToPlayer(p.getName(), crate, args.length==3 ? 1 : Integer.parseInt(args[3]));
+                            RewardManager.getInstance().giveKeyToPlayer(p.getName(), crate, args.length==4 ? Integer.parseInt(args[3]) : 1);
                         }
                         commandSender.sendMessage(Messages.successfullyGiveAll);
                         return true;
@@ -92,15 +98,15 @@ public class CratesCommand implements CommandExecutor {
         if (args.length == 2) {
             switch (args[0].toLowerCase()) {
                 case "set":
-                    commandSender.sendMessage(Messages.cratesLocationSet);
+                    commandSender.sendMessage(Convert.replaceValues(Messages.cratesLocationSet, "%crate%", args[1]));
                     CratesManager.getInstance().setCratePosition(args[1].toLowerCase(), (((Player) commandSender).getTargetBlock((Set<Material>) null, 10)).getLocation());
                     break;
                 case "remove":
-                    commandSender.sendMessage(Messages.cratesLocationRemoved);
+                    commandSender.sendMessage(Convert.replaceValues(Messages.cratesLocationRemoved, "%crate%", args[1]));
                     CratesManager.getInstance().removeCratePosition(args[1].toLowerCase());
                     break;
                 default:
-                    commandSender.sendMessage(Messages.errorCommand);
+                    commandSender.sendMessage(Messages.errorCommandAdmin);
                     break;
             }
             return true;

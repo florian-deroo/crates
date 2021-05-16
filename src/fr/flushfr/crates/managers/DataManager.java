@@ -21,7 +21,8 @@ public class DataManager {
     }
 
     public static void initData (FileConfiguration messageFile) {
-        Messages.errorCommand = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile,"command-error"));
+        Messages.errorCommandPlayer = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile,"command-error-player"));
+        Messages.errorCommandAdmin = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile,"command-error-admin"));
         Messages.reloadSuccess = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile,"reload-success"));
         Messages.reloadFailed = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile,"reload-failed"));
         Messages.noKey = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "no-key"));
@@ -31,11 +32,9 @@ public class DataManager {
         Messages.cratesLocationSet = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "crates-location-set"));
         Messages.cratesLocationRemoved = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "crates-location-remove"));
         Messages.addMissedKeyDueToFullInventory = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "add-missed-key-due-to-full-inventory"));
-        Messages.inventoryFull = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "inventory-full"));
         Messages.noCrateMatch = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "no-crate-found"));
         Messages.animationRunning = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "animation-started"));
         Messages.receivedKey = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "key-received"));
-        Messages.inventoryFull = Convert.colorListToArray(ErrorManager.getInstance().getStringList(messageFile, "inventory-full"));
 
         Data.adminPermission = ErrorManager.getInstance().getString(getMainInstance().getConfig(), "permission.admin", new Error(ErrorCategory.CONFIG, "config","permission","admin"));
         Data.playerPermission = ErrorManager.getInstance().getString(getMainInstance().getConfig(), "permission.player", new Error(ErrorCategory.CONFIG, "config","permission","player"));

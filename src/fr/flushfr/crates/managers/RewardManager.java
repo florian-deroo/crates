@@ -3,6 +3,7 @@ package fr.flushfr.crates.managers;
 import fr.flushfr.crates.objects.Crates;
 import fr.flushfr.crates.objects.Messages;
 import fr.flushfr.crates.objects.Reward;
+import fr.flushfr.crates.utils.Convert;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -68,7 +69,7 @@ public class RewardManager {
                 ItemStack key = crate.getKeyItem().build();
                 key.setAmount(amount);
                 p.getInventory().addItem(key);
-                p.sendMessage(Messages.receivedKey);
+                p.sendMessage(Convert.replaceValues(Messages.receivedKey, "%crate%", crate.getCrateName(), "%amount%", amount+""));
             } else {
                 RewardManager.getInstance().addMissedReward(player, crate.getCrateName(), amount);
                 p.sendMessage(Messages.addMissedKeyDueToFullInventory);

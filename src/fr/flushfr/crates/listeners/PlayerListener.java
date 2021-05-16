@@ -1,9 +1,11 @@
 package fr.flushfr.crates.listeners;
 
 import fr.flushfr.crates.animations.Animations;
+import fr.flushfr.crates.license.VersionChecker;
 import fr.flushfr.crates.managers.AnimationManager;
 import fr.flushfr.crates.managers.CratesManager;
 import fr.flushfr.crates.objects.Crates;
+import fr.flushfr.crates.objects.Data;
 import fr.flushfr.crates.objects.Messages;
 import fr.flushfr.crates.objects.Reward;
 import fr.flushfr.crates.objects.animation.process.CSGOAnimation;
@@ -11,14 +13,21 @@ import fr.flushfr.crates.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -33,6 +42,33 @@ public class PlayerListener implements Listener {
             if (c.getPlayer().equals(e.getPlayer())) {
                 Animations.getInstance().reOpenInventory.add((Player) e.getPlayer());
             }
+        }
+    }
+
+    @EventHandler
+    public void onConnect(EntityDamageByEntityEvent  e) {
+        if(e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION || e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) {
+            if (e.getEntity().getType() == EntityType.DROPPED_ITEM) {
+                if (e.getEntity().getName().equals("DO NOT TOUCH")) {
+                    e.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onConnect(PlayerJoinEvent event) {
+        final Player player = event.getPlayer();
+        if (!VersionChecker.getInstance().useLastVersion && event.getPlayer().hasPermission(Data.adminPermission)) {
+            player.sendMessage("§cYou do not use the latest version of the Crates plugin! Thank you for taking the latest version to avoid any risk of problem!");
+            player.sendMessage("§7Download plugin here: §a" + String.format(VersionChecker.getInstance().URL_RESOURCE, VersionChecker.pluginID));
+        }
+    }
+
+    @EventHandler
+    public void onInteract(PlayerArmorStandManipulateEvent e) {
+        if (e.getRightClicked().getName().equals("DO NOT TOUCH")) {
+            e.setCancelled(true);
         }
     }
 
